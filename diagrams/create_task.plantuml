@@ -1,0 +1,25 @@
+@startuml Create task
+    start
+    :request to create a task;
+    if (user is authorized?) then(no)
+        stop
+    endif
+    if (task is already completed?) then(yes)
+        :???;
+        stop
+    else
+        :calculate task fee;
+        note right
+            rand(-10..-20)$
+        end note
+        :calculate the task amount;
+        note right
+            rand(20..40)$
+        end note
+        note right
+            Do wee need to do it asynchronously?
+        end note
+        :save task;
+        end
+    endif
+@enduml

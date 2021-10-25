@@ -1,0 +1,20 @@
+@startuml Completed task
+    start
+    :request to mark a task as completed;
+    if (user is authorized?) then(no)
+        stop
+    endif
+    if (task was reassigned?) then(yes)
+        :return that you a loser;
+        :????;
+        stop
+    endif
+
+    if (now is 23:59) then(yes)
+        :????;
+        stop
+    endif
+    :mark task as completed;
+    :create audit log message;
+    end
+@enduml

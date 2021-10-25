@@ -1,0 +1,28 @@
+@startuml High-level-architecture
+storage Tasker
+storage AnalyticsProvider
+storage Aggregator
+storage Calculator
+storage Autheticator
+storage Accouting
+storage TasksUI
+storage AccountingUI
+storage Auditor
+storage AnalyticsUI
+
+TasksUI -- Autheticator
+AccountingUI -- Autheticator
+AnalyticsUI -- Autheticator
+
+Autheticator -- Tasker
+Autheticator -- AnalyticsProvider
+Autheticator -- Accouting
+
+Tasker -- Auditor
+Calculator -- Auditor
+
+Auditor -- Aggregator
+
+Aggregator -- AnalyticsProvider
+Accouting -- Aggregator
+@enduml

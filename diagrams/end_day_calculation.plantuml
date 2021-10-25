@@ -1,0 +1,11 @@
+@startuml End of day calculation
+    :get all employees who have the balance > 0;
+    repeat
+        :send notification with the total amount earned for this day;
+        :create audit log message;
+        note right
+            calculated in mark task as completed
+        end note
+        :set balance = 0 ;
+    repeat while(task in the list) is (yes)
+@enduml

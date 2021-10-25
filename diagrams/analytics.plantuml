@@ -1,0 +1,26 @@
+
+@startuml Handle Async audit log message(task completed)
+    start
+    :receive the message that employee finished the task;
+    :accrue an amount to the user;
+    note right
+        balance??
+        balance moves to the next day
+    end note
+    :increment the counter for total earned amount for a day(for a user);
+    if (it's very expensive task?) then(yes)
+        :mark as very expensive task for the day;
+    endif
+    :reduce the counter of how many management earned for the day;
+    end
+@enduml
+
+@startuml Handle Async audit log message(task fee)
+    start
+    :receive the message that a task is assigned;
+    :increase the counter of how many management earned for the day;
+    if (it's very expensive task?) then(yes)
+        :mark as very expensive task for the day;
+    endif
+    end
+@enduml

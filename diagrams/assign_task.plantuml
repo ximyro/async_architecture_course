@@ -1,0 +1,24 @@
+@startuml Assign Task
+    start
+    if (user is authorized?) then(no)
+        stop
+    endif
+    :get all open tasks;
+    note right
+        What do we do if a user marks a task as completed here?
+    end note
+    if (we don't have open tasks?) then(yes)
+        stop
+    endif
+    :get all active employees;
+     if (we don't have active employees?) then(yes)
+        stop
+    endif
+    :run algorithm of assigning;
+    repeat
+        :assign the task for employee;
+        :charge an employee on the assigment cost;
+        :create audit log message;
+    repeat while (employee is in the list) is (exist)
+    end
+@enduml
