@@ -15,6 +15,6 @@
         stop
     endif
     :mark task as completed;
-    :create audit log message;
+    :create audit log message(task completed);
     end
 @enduml

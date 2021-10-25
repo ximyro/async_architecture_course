@@ -15,6 +15,30 @@
     end
 @enduml
 
+@startuml Handl Async audit log message(task assigned)
+    start
+    :receive the message that task is assigned;
+    :charge an employee on the assigment cost;
+    end
+@enduml
+
+@startuml Handle Async audit log message(task created)
+    start
+    :receive the message that task is created;
+    :calculate task fee;
+    note right
+        rand(-10..-20)$
+    end note
+    :calculate the task amount;
+    note right
+        rand(20..40)$
+    end note
+    note right
+        Do wee need to do it asynchronously?
+    end note
+    :change task state to calculated;
+@enduml
+
 @startuml Handle Async audit log message(task fee)
     start
     :receive the message that a task is assigned;

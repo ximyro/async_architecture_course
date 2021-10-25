@@ -2,7 +2,7 @@
 storage Tasker
 storage AnalyticsProvider
 storage Aggregator
-storage Calculator
+storage EndDayNotifier
 storage Autheticator
 storage Accouting
 storage TasksUI
@@ -19,7 +19,7 @@ Autheticator -- AnalyticsProvider
 Autheticator -- Accouting
 
 Tasker -- Auditor
-Calculator -- Auditor
+EndDayNotifier -- Auditor
 
 Auditor -- Aggregator
 

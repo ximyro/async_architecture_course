@@ -1,0 +1,31 @@
+.idea
+.vscode
+account_management_service
+.tags*
+lastupdate.tmp
+.DS_Store
+dump.rdb
+tests/log
+log/*
+logs/*
+public/assets
+.sass-cache
+tmp
+*.coverprofile
+coverage.txt
+coverage.out
+debug.log
+
+# node packages
+/node_modules
+/flow-typed
+
+# static files by webpack
+/views/ui/index.html
+/assets/build
+
+# yarn packages manager
+yarn-error.log
+
+bin/service
+.env
