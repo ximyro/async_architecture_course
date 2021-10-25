@@ -2,4 +2,4 @@
 
 ## Diagrams
 
-[Diagrams](Diagrams/Diagrams.md)
+[Diagrams](./Diagrams/Diagrams.md)
