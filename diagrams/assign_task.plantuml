@@ -17,8 +17,7 @@
     :run algorithm of assigning;
     repeat
         :assign the task for employee;
-        :charge an employee on the assigment cost;
-        :create audit log message;
+        :create audit log message(task assigned);
     repeat while (employee is in the list) is (exist)
     end
 @enduml
