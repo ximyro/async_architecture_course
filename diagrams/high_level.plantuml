@@ -1,28 +1,26 @@
 @startuml High-level-architecture
 storage Tasker
-storage AnalyticsProvider
-storage Aggregator
-storage EndDayNotifier
+storage Analytics
+storage EndDayProcessor
 storage Autheticator
 storage Accouting
 storage TasksUI
 storage AccountingUI
 storage Auditor
 storage AnalyticsUI
+queue EventsBus
 
 TasksUI -- Autheticator
 AccountingUI -- Autheticator
 AnalyticsUI -- Autheticator
 
 Autheticator -- Tasker
-Autheticator -- AnalyticsProvider
+Autheticator -- Analytics
 Autheticator -- Accouting
 
-Tasker -- Auditor
-EndDayNotifier -- Auditor
-
-Auditor -- Aggregator
-
-Aggregator -- AnalyticsProvider
-Accouting -- Aggregator
+Tasker -- EventsBus
+EventsBus -- Auditor
+Analytics -- EventsBus
+Accouting -- EventsBus
+EndDayProcessor -- EventsBus
 @enduml
