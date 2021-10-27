@@ -33,9 +33,6 @@
     note right
         rand(20..40)$
     end note
-    note right
-        Do wee need to do it asynchronously?
-    end note
     :change task state to calculated;
 @enduml
 
@@ -46,5 +43,12 @@
     if (it's very expensive task?) then(yes)
         :mark as very expensive task for the day;
     endif
+    end
+@enduml
+
+
+@startuml Handle Async audit log message(invoice paid)
+    start
+    :set user balance = 0 ;
     end
 @enduml
