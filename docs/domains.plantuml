@@ -1,0 +1,70 @@
+@startuml Task tracker
+!include ../es-plantuml/ES.puml
+
+LAYOUT_TOP_DOWN()
+
+LAYOUT_WITH_LEGEND()
+
+title **Awesome task tracker**
+
+BoundedContext(createTaskContext, "Create task business process") {
+    Policy(createTaskPolicy, "User", "Everyone can create a task")
+    Command(createTask, "Create task", "", "User")
+    ReadModel(createdTask, "Created task")
+    Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Task created")
+    Event(taskAmountsCalculated, "Task amounts calculated")
+    Event(taskCreated, "Task created")
+    Command(updateTaskAmounts, "Update task amounts", "", "Event: Task amounts calculated")
+
+    Lay_R(createTaskPolicy, createTask)    
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_R(calculateTaskAmounts, taskAmountsCalculated)
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_D(taskCreated, createdTask)
+    Lay_R(createTask, taskCreated)
+    Lay_R(taskAmountsCalculated, updateTaskAmounts)
+}
+ 
+BoundedContext(tasks, "Assign Task"){
+    Policy(assignTaskPolicy, "User(manager)", "only Manager can assign a task")
+    Command(assignTasks, "Assign tasks", "", "User(manager)")
+    Event(taskAssigned, "")
+
+}
+
+
+BoundedContext(sampleContext, "Sample Context"){
+  Event(e1, "one", "")
+  Event(e2, "two", "")
+  Command(c1, "one", "")
+  Command(c2, "two", "")
+  Command(c3, "three", "")
+  Aggregate(a1, "one", "")
+  Event(e4, "four", "")
+  Event(e5, "five", "")
+  Event(e6, "six", "")
+  Event(e7, "seven", "")
+  Event(e8, "eight", "")
+  Command(c4, "four", "")
+  Command(c5, "five", "")
+  Aggregate(a2, "two", "")
+  Lay_L(a1, c1) 
+  Lay_D(c1, c2)
+  Lay_D(c2, c3)
+  Lay_R(a1, e1)
+  Lay_D(e1, e2)
+  Lay_L(a2, c4)
+  Lay_R(a2, e4)
+  Lay_L(a2, c4) 
+  Lay_D(c4, c5)
+  Lay_R(a2, e4)
+  Lay_D(e4, e5)
+  Lay_D(e5, e6)
+  Lay_D(e6, e7)
+  Lay_D(e7, e8)
+  Lay_L(a2, c4)
+  Lay_D(c4, c5)
+}
+
+@enduml

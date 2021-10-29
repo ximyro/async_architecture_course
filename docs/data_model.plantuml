@@ -1,0 +1,29 @@
+@startuml Data model for awesome task tracker
+
+rectangle User
+rectangle "User role" as ur
+rectangle "User auth information" as uai
+rectangle "User Balance" as ub
+rectangle "User Balance audit" as uba
+
+rectangle UserEarnPerDay
+rectangle ManagerEarnPerDay
+rectangle ManagersLosePerDay
+
+rectangle Task
+rectangle Status
+rectangle Amount
+rectangle AssignFee
+
+User --> ur
+User --> uai
+User --> ub
+User --> uba
+User --> Task
+Task --> Status
+Task --> Amount
+Task --> AssignFee
+uba --> UserEarnPerDay
+uba --> ManagerEarnPerDay
+uba --> ManagersLosePerDay
+@enduml
