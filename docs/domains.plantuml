@@ -1,4 +1,4 @@
-@startuml Task tracker
+@startuml task_tracker
 !include ../es-plantuml/ES.puml
 
 LAYOUT_TOP_DOWN()

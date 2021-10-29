@@ -1,4 +1,4 @@
-@startuml Data model for awesome task tracker
+@startuml data_model
 
 rectangle User
 rectangle "User role" as ur
