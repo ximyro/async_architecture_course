@@ -3,18 +3,20 @@
 
 LAYOUT_TOP_DOWN()
 
+top to bottom direction
+
 LAYOUT_WITH_LEGEND()
 
 title **Awesome task tracker**
 
-BoundedContext(createTaskContext, "Create task business process") {
+BoundedContext(createTaskContext, "Create task") {
     Policy(createTaskPolicy, "User", "Everyone can create a task")
     Command(createTask, "Create task", "", "User")
-    ReadModel(createdTask, "Created task")
-    Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Task created")
-    Event(taskAmountsCalculated, "Task amounts calculated")
-    Event(taskCreated, "Task created")
-    Command(updateTaskAmounts, "Update task amounts", "", "Event: Task amounts calculated")
+    ReadModel(createdTask, "Task")
+    Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Tasks.created")
+    Event(taskAmountsCalculated, "Tasks.AmountsCalculated")
+    Event(taskCreated, "Tasks.created")
+    Command(taskReadyForAssign, "Update task amounts + status", "", "Event: Tasks.AmountsCalculated")
 
     Lay_R(createTaskPolicy, createTask)    
     Lay_R(createTask, calculateTaskAmounts)
@@ -23,48 +25,73 @@ BoundedContext(createTaskContext, "Create task business process") {
     Lay_R(createTask, calculateTaskAmounts)
     Lay_D(taskCreated, createdTask)
     Lay_R(createTask, taskCreated)
-    Lay_R(taskAmountsCalculated, updateTaskAmounts)
+    Lay_R(taskAmountsCalculated, taskReadyForAssign)
 }
  
-BoundedContext(tasks, "Assign Task"){
+BoundedContext(assignTaskContext, "Assign Task"){
     Policy(assignTaskPolicy, "User(manager)", "only Manager can assign a task")
     Command(assignTasks, "Assign tasks", "", "User(manager)")
-    Event(taskAssigned, "")
+    ReadModel(ok, "Return OK to manager")
+    Event(taskAssigned, "Tasks.Assigned")
+    Command(chargeUserBalance, "Charge User balance", "", "Event: Tasks.Assigned")
+    Command(incrementManagersEarnValue, "Increment managers earn counter", "", "Event: Tasks.Assigned")
+    Command(incrementUsersInDebt, "Increment users counter with debt", "", "Event: Tasks.Assigned")
+    Event(userBalanceChanged, "Users.BalanceCharged")
+    Command(createAuditRecord, "Create audit log", "", "Event: Users.BalanceCharged")
 
+    Lay_R(assignTaskPolicy, assignTasks)
+    Lay_D(assignTasks, ok)
+    Lay_R(assignTasks, taskAssigned)
+    Lay_R(taskAssigned, chargeUserBalance)
+    Lay_D(chargeUserBalance, incrementManagersEarnValue)
+    Lay_R(chargeUserBalance, userBalanceChanged)
+    Lay_D(incrementManagersEarnValue, incrementUsersInDebt)
+    Lay_R(userBalanceChanged, createAuditRecord)
 }
 
+BoundedContext(finishTaskContext, "Finish Task"){
+    Policy(finishTaskPolicy, "User", "Everyone can finish a task")
+    Command(finishTask, "FinishTask", "", "User")
+    ReadModel(showFinishedTask, "Task")
+    Event(finishedTask, "Tasks.Completed")
+    Command(increaseUserBalance, "Increase User balance", "", "Event: Tasks.Completed")
+    Command(decreasetManagersEarnValue, "Decrease managers counter", "", "Event: Tasks.Completed")
+    Command(calculateTheMostExpensiveTask, "Calculate the most expensive task for day", "", "Event: Tasks.Completed")
+    Command(calculateTheMostExpensiveTaskForWeek, "Calculate the most expensive task for week", "", "Event: Analytics.ExpensiveTaskForDay")
+    Command(calculateTheMostExpensiveTaskForMonth, "Calculate the most expensive task for month", "", "Event: Analytics.ExpensiveTaskForWeek")
+    Event(userBalanceChangedAfterFinish, "Users.BalanceCharged")
+    Command(createAuditRecordAfterFinish, "Create audit log", "", "Event: Users.BalanceCharged")
+    Command(decreaseUsersInDebt, "Decrease users counter with debt", "", "Event: Tasks.Completed")
+    Event(expensiveForDay, "Analytics.ExpensiveTaskForDay")
+    Event(expensiveForWeek, "Analytics.ExpensiveTaskForWeek")
 
-BoundedContext(sampleContext, "Sample Context"){
-  Event(e1, "one", "")
-  Event(e2, "two", "")
-  Command(c1, "one", "")
-  Command(c2, "two", "")
-  Command(c3, "three", "")
-  Aggregate(a1, "one", "")
-  Event(e4, "four", "")
-  Event(e5, "five", "")
-  Event(e6, "six", "")
-  Event(e7, "seven", "")
-  Event(e8, "eight", "")
-  Command(c4, "four", "")
-  Command(c5, "five", "")
-  Aggregate(a2, "two", "")
-  Lay_L(a1, c1) 
-  Lay_D(c1, c2)
-  Lay_D(c2, c3)
-  Lay_R(a1, e1)
-  Lay_D(e1, e2)
-  Lay_L(a2, c4)
-  Lay_R(a2, e4)
-  Lay_L(a2, c4) 
-  Lay_D(c4, c5)
-  Lay_R(a2, e4)
-  Lay_D(e4, e5)
-  Lay_D(e5, e6)
-  Lay_D(e6, e7)
-  Lay_D(e7, e8)
-  Lay_L(a2, c4)
-  Lay_D(c4, c5)
+    Lay_R(finishTaskPolicy, finishTask)
+    Lay_D(finishTask, showFinishedTask)
+    Lay_R(finishTask, finishedTask)
+    Lay_R(finishedTask, increaseUserBalance)
+    Lay_D(increaseUserBalance, calculateTheMostExpensiveTask)
+    Lay_D(calculateTheMostExpensiveTask, decreaseUsersInDebt)
+    Lay_D(decreaseUsersInDebt, decreasetManagersEarnValue)
+    Lay_R(increaseUserBalance, userBalanceChangedAfterFinish)
+    Lay_D(userBalanceChangedAfterFinish, expensiveForDay)
+    Lay_R(userBalanceChangedAfterFinish, createAuditRecordAfterFinish)
+    Lay_R(expensiveForDay, calculateTheMostExpensiveTaskForWeek)
+    Lay_R(calculateTheMostExpensiveTaskForWeek, expensiveForWeek)
+    Lay_R(expensiveForWeek, calculateTheMostExpensiveTaskForMonth) 
 }
+
+BoundedContext(finishOfDay, "Pay users per day") {
+  Command(payUsersPerDay, "Pay Users for the day", "", "Cron job")
+  Event(dailyPaidAmoount, "Users.DailyPaidAmount")
+  Command(notifyUser, "Send email to a user", "", "Event: Users.DailyPaidAmount")
+  Command(setZeroBalance, "Set user balace to zero", "", "Event: Users.DailyPaidAmount")
+  Command(createAuditDailyLog, "Create audit log", "", "Event: Users.DailyPaidAmount")
+
+  Lay_R(payUsersPerDay, dailyPaidAmoount)
+  Lay_R(dailyPaidAmoount, notifyUser)
+  Lay_D(notifyUser, setZeroBalance)
+  Lay_D(setZeroBalance, createAuditDailyLog)
+}
+
 
 @enduml

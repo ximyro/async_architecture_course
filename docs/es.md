@@ -19,7 +19,7 @@ Event: Tasks.AmountsCalculated
 Actor: Event Tasks.AmountsCalculated  
 Command: UpdateTaskAmounts  
 Data: task fee + task amount  
-Event: Task.ReadyForAssign  
+Event: Tasks.ReadyForAssign  
 
 ## Назначение задачи для всех
 
@@ -66,9 +66,9 @@ Event: Managers.BalaceChanged
 ## Увеличить значение того, сколько пользователь заработал за день
 
 Actor: Tasks.Completed  
-Command: Increment how many user earn   
+Command: Increment how many user earn  
 Data: user public id + task id + task amount  
-Event: Managers.BalaceChanged
+Event: Users.BalaceChanged
 
 ## Увеличить значение, сколько попугов ушли в минус
 
@@ -82,7 +82,7 @@ Event: ???
 Actor: Tasks.Completed  
 Command: Decrease how many popugs have negative balance  
 Data: user public id + task id + task amount  
-Event: Users.BalanceChanged  
+Event: ????  
 
 ## Расчитать пользователей за день
 
@@ -98,9 +98,30 @@ Command: Send email
 Data: user email + email data  
 Event: ?????  
 
+## Выставить баланс пользователя в 0
+
+Actor: Event Users.DailyPaidAmount  
+Command: Set User balance = 0  
+Data: user id
+Event: ?????  
+
 ## Расчитать самую дорогую задачу за день
 
 Actor: Tasks.Completed  
 Command: Check || change the most expensive task during the day  
+Data: task amount  
+Event: Analytics.ExpensiveTaskForDay
+
+## Расчитать самую дорогую задачу за неделю
+
+Actor: Analytics.ExpensiveTaskForDay  
+Command: Check || change the most expensive task during the week  
+Data: task amount  
+Event: Analytics.ExpensiveTaskForWeek  
+
+## Расчитать самую дорогую задачу за месяц
+
+Actor: Tasks.Completed  
+Command: Check || change the most expensive task during the month  
 Data: task amount  
 Event: ???  
