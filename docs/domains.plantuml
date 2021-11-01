@@ -1,97 +1,55 @@
-@startuml task_tracker
-!include ../es-plantuml/ES.puml
+@startuml Domains
 
-LAYOUT_TOP_DOWN()
-
-top to bottom direction
-
-LAYOUT_WITH_LEGEND()
-
-title **Awesome task tracker**
-
-BoundedContext(createTaskContext, "Create task") {
-    Policy(createTaskPolicy, "User", "Everyone can create a task")
-    Command(createTask, "Create task", "", "User")
-    ReadModel(createdTask, "Task")
-    Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Tasks.created")
-    Event(taskAmountsCalculated, "Tasks.AmountsCalculated")
-    Event(taskCreated, "Tasks.created")
-    Command(taskReadyForAssign, "Update task amounts + status", "", "Event: Tasks.AmountsCalculated")
-
-    Lay_R(createTaskPolicy, createTask)    
-    Lay_R(createTask, calculateTaskAmounts)
-    Lay_R(calculateTaskAmounts, taskAmountsCalculated)
-    Lay_R(createTask, calculateTaskAmounts)
-    Lay_R(createTask, calculateTaskAmounts)
-    Lay_D(taskCreated, createdTask)
-    Lay_R(createTask, taskCreated)
-    Lay_R(taskAmountsCalculated, taskReadyForAssign)
-}
- 
-BoundedContext(assignTaskContext, "Assign Task"){
-    Policy(assignTaskPolicy, "User(manager)", "only Manager can assign a task")
-    Command(assignTasks, "Assign tasks", "", "User(manager)")
-    ReadModel(ok, "Return OK to manager")
-    Event(taskAssigned, "Tasks.Assigned")
-    Command(chargeUserBalance, "Charge User balance", "", "Event: Tasks.Assigned")
-    Command(incrementManagersEarnValue, "Increment managers earn counter", "", "Event: Tasks.Assigned")
-    Command(incrementUsersInDebt, "Increment users counter with debt", "", "Event: Tasks.Assigned")
-    Event(userBalanceChanged, "Users.BalanceCharged")
-    Command(createAuditRecord, "Create audit log", "", "Event: Users.BalanceCharged")
-
-    Lay_R(assignTaskPolicy, assignTasks)
-    Lay_D(assignTasks, ok)
-    Lay_R(assignTasks, taskAssigned)
-    Lay_R(taskAssigned, chargeUserBalance)
-    Lay_D(chargeUserBalance, incrementManagersEarnValue)
-    Lay_R(chargeUserBalance, userBalanceChanged)
-    Lay_D(incrementManagersEarnValue, incrementUsersInDebt)
-    Lay_R(userBalanceChanged, createAuditRecord)
+artifact AuthDomain {
+    rectangle User
+    rectangle "User role" as ur
+    rectangle "User auth information" as uai
 }
 
-BoundedContext(finishTaskContext, "Finish Task"){
-    Policy(finishTaskPolicy, "User", "Everyone can finish a task")
-    Command(finishTask, "FinishTask", "", "User")
-    ReadModel(showFinishedTask, "Task")
-    Event(finishedTask, "Tasks.Completed")
-    Command(increaseUserBalance, "Increase User balance", "", "Event: Tasks.Completed")
-    Command(decreasetManagersEarnValue, "Decrease managers counter", "", "Event: Tasks.Completed")
-    Command(calculateTheMostExpensiveTask, "Calculate the most expensive task for day", "", "Event: Tasks.Completed")
-    Command(calculateTheMostExpensiveTaskForWeek, "Calculate the most expensive task for week", "", "Event: Analytics.ExpensiveTaskForDay")
-    Command(calculateTheMostExpensiveTaskForMonth, "Calculate the most expensive task for month", "", "Event: Analytics.ExpensiveTaskForWeek")
-    Event(userBalanceChangedAfterFinish, "Users.BalanceCharged")
-    Command(createAuditRecordAfterFinish, "Create audit log", "", "Event: Users.BalanceCharged")
-    Command(decreaseUsersInDebt, "Decrease users counter with debt", "", "Event: Tasks.Completed")
-    Event(expensiveForDay, "Analytics.ExpensiveTaskForDay")
-    Event(expensiveForWeek, "Analytics.ExpensiveTaskForWeek")
-
-    Lay_R(finishTaskPolicy, finishTask)
-    Lay_D(finishTask, showFinishedTask)
-    Lay_R(finishTask, finishedTask)
-    Lay_R(finishedTask, increaseUserBalance)
-    Lay_D(increaseUserBalance, calculateTheMostExpensiveTask)
-    Lay_D(calculateTheMostExpensiveTask, decreaseUsersInDebt)
-    Lay_D(decreaseUsersInDebt, decreasetManagersEarnValue)
-    Lay_R(increaseUserBalance, userBalanceChangedAfterFinish)
-    Lay_D(userBalanceChangedAfterFinish, expensiveForDay)
-    Lay_R(userBalanceChangedAfterFinish, createAuditRecordAfterFinish)
-    Lay_R(expensiveForDay, calculateTheMostExpensiveTaskForWeek)
-    Lay_R(calculateTheMostExpensiveTaskForWeek, expensiveForWeek)
-    Lay_R(expensiveForWeek, calculateTheMostExpensiveTaskForMonth) 
+artifact TasksDomain {
+    rectangle Task
+    rectangle Status
+    rectangle UserID
+    rectangle AssignedUserID
+    rectangle Amount
+    rectangle AssignFee
 }
 
-BoundedContext(finishOfDay, "Pay users per day") {
-  Command(payUsersPerDay, "Pay Users for the day", "", "Cron job")
-  Event(dailyPaidAmoount, "Users.DailyPaidAmount")
-  Command(notifyUser, "Send email to a user", "", "Event: Users.DailyPaidAmount")
-  Command(setZeroBalance, "Set user balace to zero", "", "Event: Users.DailyPaidAmount")
-  Command(createAuditDailyLog, "Create audit log", "", "Event: Users.DailyPaidAmount")
+artifact AccountingDomain {
+    rectangle TaskID
+    rectangle UserIDForAccounting
+    rectangle UserEarnPerDay
+    rectangle "User Balance" as ub
+    rectangle "User Balance audit" as uba
+    rectangle Notification
+    rectangle PayPerDay
+    rectangle ManagerEarnPerDay_Copy
+}
 
-  Lay_R(payUsersPerDay, dailyPaidAmoount)
-  Lay_R(dailyPaidAmoount, notifyUser)
-  Lay_D(notifyUser, setZeroBalance)
-  Lay_D(setZeroBalance, createAuditDailyLog)
+artifact AnalyticsDomain {
+    rectangle UsersinDebt
+    rectangle UserIdForAnalytics
+    rectangle TaskForAnalytics
+    rectangle TheMostExpensiveTask
+    rectangle ManagerEarnPerDay
+    rectangle ManagersLosePerDay
 }
 
 
+User --> ur
+User --> uai
+User --> ub
+User --> uba
+User --> Task
+Task --> Status
+Task --> Amount
+Task --> UserID
+Task --> AssignedUserID
+Task --> AssignFee
+uba --> UserEarnPerDay
+uba --> ManagerEarnPerDay
+uba --> ManagersLosePerDay
+UserEarnPerDay --> Notification
+User --> UserIdForAnalytics
+TaskForAnalytics --> TheMostExpensiveTask
 @enduml

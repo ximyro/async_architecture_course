@@ -125,3 +125,10 @@ Actor: Tasks.Completed
 Command: Check || change the most expensive task during the month  
 Data: task amount  
 Event: ???  
+
+## Скопировать значение того, сколько заработали менеджеры
+
+Actor: Managers.BalaceChanged  
+Command: Apply the difference + save for UI  
+Data: maangers balance changes + date  
+Event: ???  

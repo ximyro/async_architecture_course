@@ -1,0 +1,15 @@
+@startuml Services
+rectangle Tasker
+rectangle Auth
+rectangle Accounting
+rectangle Analytics
+
+
+Tasker --> Auth : sync communication
+Accounting --> Auth : sync communication
+Analytics --> Auth : sync communication
+
+Tasker <-[dotted]-> Accounting : async
+Accounting <-[dotted]- Analytics : async
+
+@enduml

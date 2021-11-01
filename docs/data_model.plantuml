@@ -23,6 +23,7 @@ User --> Task
 Task --> Status
 Task --> Amount
 Task --> AssignFee
+Task ---> uba
 uba --> UserEarnPerDay
 uba --> ManagerEarnPerDay
 uba --> ManagersLosePerDay
