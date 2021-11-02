@@ -11,19 +11,26 @@ rectangle ManagerEarnPerDay
 rectangle ManagersLosePerDay
 
 rectangle Task
+rectangle AssignedUserID
 rectangle Status
 rectangle Amount
 rectangle AssignFee
+rectangle ApplyFeeAmountLog
+rectangle ApplyAmountLog
 
+AssignFee --> ApplyFeeAmountLog
+Amount --> ApplyAmountLog
 User --> ur
 User --> uai
 User --> ub
 User --> uba
 User --> Task
+Task --> AssignedUserID
 Task --> Status
 Task --> Amount
 Task --> AssignFee
-Task ---> uba
+Task --> ApplyFeeAmountLog
+Task --> ApplyAmountLog
 uba --> UserEarnPerDay
 uba --> ManagerEarnPerDay
 uba --> ManagersLosePerDay

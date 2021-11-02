@@ -3,8 +3,6 @@
 
 LAYOUT_TOP_DOWN()
 
-top to bottom direction
-
 LAYOUT_WITH_LEGEND()
 
 title **Awesome task tracker**
@@ -33,7 +31,7 @@ BoundedContext(assignTaskContext, "Assign Task"){
     Command(assignTasks, "Assign tasks", "", "User(manager)")
     ReadModel(ok, "Return OK to manager")
     Event(taskAssigned, "Tasks.Assigned")
-    Command(chargeUserBalance, "Charge User balance", "", "Event: Tasks.Assigned")
+    Command(createChargeUserBalanceLog, "Creat a record for charging user's balance", "", "Event: Tasks.Assigned")
     Command(incrementManagersEarnValue, "Increment managers earn counter", "", "Event: Tasks.Assigned")
     Command(incrementUsersInDebt, "Increment users counter with debt", "", "Event: Tasks.Assigned")
     Event(userBalanceChanged, "Users.BalanceCharged")
@@ -42,9 +40,9 @@ BoundedContext(assignTaskContext, "Assign Task"){
     Lay_R(assignTaskPolicy, assignTasks)
     Lay_D(assignTasks, ok)
     Lay_R(assignTasks, taskAssigned)
-    Lay_R(taskAssigned, chargeUserBalance)
-    Lay_D(chargeUserBalance, incrementManagersEarnValue)
-    Lay_R(chargeUserBalance, userBalanceChanged)
+    Lay_R(taskAssigned, createChargeUserBalanceLogcreateChargeUserBalanceLog)
+    Lay_D(createChargeUserBalanceLog, incrementManagersEarnValue)
+    Lay_R(createChargeUserBalanceLogcreateChargeUserBalanceLog, userBalanceChanged)
     Lay_D(incrementManagersEarnValue, incrementUsersInDebt)
     Lay_R(userBalanceChanged, createAuditRecord)
 }
@@ -54,6 +52,7 @@ BoundedContext(finishTaskContext, "Finish Task"){
     Command(finishTask, "FinishTask", "", "User")
     ReadModel(showFinishedTask, "Task")
     Event(finishedTask, "Tasks.Completed")
+    Command(createIncreaseUserBalanceLogMessage, "Create the log message for increasing user balance(apply later)", "", "Event: Tasks.Completed")
     Command(increaseUserBalance, "Increase User balance", "", "Event: Tasks.Completed")
     Command(decreasetManagersEarnValue, "Decrease managers counter", "", "Event: Tasks.Completed")
     Command(calculateTheMostExpensiveTask, "Calculate the most expensive task for day", "", "Event: Tasks.Completed")
@@ -72,6 +71,7 @@ BoundedContext(finishTaskContext, "Finish Task"){
     Lay_D(increaseUserBalance, calculateTheMostExpensiveTask)
     Lay_D(calculateTheMostExpensiveTask, decreaseUsersInDebt)
     Lay_D(decreaseUsersInDebt, decreasetManagersEarnValue)
+    Lay_D(decreasetManagersEarnValue, createIncreaseUserBalanceLogMessage)
     Lay_R(increaseUserBalance, userBalanceChangedAfterFinish)
     Lay_D(userBalanceChangedAfterFinish, expensiveForDay)
     Lay_R(userBalanceChangedAfterFinish, createAuditRecordAfterFinish)
@@ -79,6 +79,31 @@ BoundedContext(finishTaskContext, "Finish Task"){
     Lay_R(calculateTheMostExpensiveTaskForWeek, expensiveForWeek)
     Lay_R(expensiveForWeek, calculateTheMostExpensiveTaskForMonth) 
 }
+
+BoundedContext(createUser, "Create User") {
+	Policy(createUserPolicy, "User(manager)", "Manager creates a user")
+ 	Command(createUserCmd, "CreateUser", "", "User(manager)")
+	Event(userCreated, "Users.Created")
+	Command(copyUser, "Copy User with Role", "", "Event: Users.Created")
+
+	Lay_R(createUserPolicy, createUserCmd)
+	Lay_R(createUserCmd, userCreated)
+	Lay_R(userCreated, copyUser)
+}
+
+BoundedContext(createUser, "User role changed") {
+	Policy(createUserPolicy, "User(manager)", "Manager creates a user")
+ 	Command(createUserCmd, "CreateUser", "", "User(manager)")
+	Event(userCreated, "Users.RoleChanged")
+	Command(unassignTask,"UnAssignTasks", "", "Event: Users.RoleChanged")
+	Command(updateUser, "Copy User with Role", "", "Event: Users.Created")
+
+	Lay_R(createUserPolicy, createUserCmd)
+	Lay_R(createUserCmd, userCreated)
+	Lay_R(userCreated, unassignTask)
+	Lay_D(unassignTask, updateUser)
+}
+
 
 BoundedContext(finishOfDay, "Pay users per day") {
   Command(payUsersPerDay, "Pay Users for the day", "", "Cron job")

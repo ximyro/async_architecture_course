@@ -3,13 +3,19 @@ rectangle Tasker
 rectangle Auth
 rectangle Accounting
 rectangle Analytics
+rectangle Pricing
+rectangle User
 
+User <--> Tasker
+User <--> Accounting
+User <--> Analytics
+Tasker <-[dotted]-> Auth : async way
+Accounting <-[dotted]-> Auth : async way
+Analytics <-[dotted]-> Auth : async communication
 
-Tasker --> Auth : sync communication
-Accounting --> Auth : sync communication
-Analytics --> Auth : sync communication
+Tasker <-[dotted]-> Accounting : async way
+Accounting <-[dotted]- Analytics : async way
 
-Tasker <-[dotted]-> Accounting : async
-Accounting <-[dotted]- Analytics : async
+Pricing <-[dotted]-> Accounting : async way
 
 @enduml

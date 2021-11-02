@@ -7,19 +7,40 @@ Command: Create task
 Data: Task + user public id  
 Event: Tasks.Created  
 
-## Назначение стоимости задачи
+## Назначение стоимости взятия задачи
 
 Actor: Event Tasks.Created  
 Command: Calculate task amounts  
 Data: task id  
-Event: Tasks.AmountsCalculated  
+Event: Pricing.FeeCalculated  
 
-## Сохранение стоимости задачи
+## Назначение стоимости выполнения задачи
 
-Actor: Event Tasks.AmountsCalculated  
-Command: UpdateTaskAmounts  
-Data: task fee + task amount  
-Event: Tasks.ReadyForAssign  
+Actor: Event Tasks.Created  
+Command: Calculate task amounts  
+Data: task id  
+Event: Pricing.AmountCalculated
+
+## Сохранение стоимости выполнения задачи
+
+Actor: Event Pricing.AmountCalculated  
+Command: UpdateTaskAmount  
+Data: task  + task amount  
+Event: Tasks.Updated  
+
+## Сохранение стоимости назначения задачи
+
+Actor: Event Pricing.FeeCalculated  
+Command: UpdateTaskAmount  
+Data: task  + task amount  
+Event: Tasks.Updated  
+
+## Сохранение копии пользователя
+
+Actor: Event: Users.Created
+Command: Save a copy of user
+Data: user + role
+Event: ???
 
 ## Назначение задачи для всех
 
@@ -34,6 +55,20 @@ Actor: User
 Command: Task completed  
 Data: user public id + task id  
 Event: Tasks.Completed  
+
+## Снять деньги с баланса пользователя(если не цены не было, а она появилась позже после ассайна)
+
+Actor: Event Pricing.FeeCalculated  
+Command: Charge User Balace  
+Data: user public id + user balance + task fee  
+Event: Users.BalanceCharged  
+
+## Начислить деньги пользователю(если не цены не было, а она появилась позже после ассайна)
+
+Actor: Event Pricing.AmountCalculated  
+Command: Increment how many user earn  
+Data: user public id + user balance + task fee  
+Event: Users.BalanceCharged  
 
 ## Снять деньги с баланса пользователя
 
