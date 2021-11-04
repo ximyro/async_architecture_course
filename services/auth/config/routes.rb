@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
   use_doorkeeper
   scope 'admin' do
-    resources :users
+    resources :users do
+      collection do
+        get :me
+      end
+    end
   end
 
   devise_for :users, controllers: {
-    sessions: 'users/sessions'
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
   }
   use_doorkeeper
 

@@ -13,6 +13,13 @@
   <%= form.label :email, "Email" %>
   <%= form.email_field :email %>
 
+  <%= form.label :full_name, "Full name" %>
+  <%= form.text_field :full_name %>
+
+  <%= form.label :role, "Role" %>
+  <%= form.select :role, User.roles.keys, selected: user.role %>
+
+  <hr>
   <div class="actions">
     <%= form.submit %>
   </div>

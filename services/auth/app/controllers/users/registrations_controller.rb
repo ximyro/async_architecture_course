@@ -11,8 +11,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    Rails.logger.info "asddas"
-     super
+    super
+
+    ## Hack
+    user = User.find(current_user.id)
+    event = {
+      event_name: "Users.Created",
+      data: {
+        public_id: user.public_id,
+        email: user.email,
+        role: user.role,
+        full_name: user.full_name,
+      }
+    }
+    Producer.call(event.to_json, "users-stream")
   end
 
   # GET /resource/edit
