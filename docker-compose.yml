@@ -1,0 +1,42 @@
+version: "3.4"
+services:
+  base:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - services:/services
+    depends_on:
+      - bg-sync
+  bg-sync:
+    image: cweagans/bg-sync
+    volumes:
+      - ./services:/source
+      - services:/services
+    environment:
+      - SYNC_DESTINATION=/services
+      - SYNC_MAX_INOTIFY_WATCHES=40000
+      - SYNC_VERBOSE=1
+    privileged: true
+    command: "bg-sync"
+  auth:
+    image: async_architecture_course_base:latest
+    command: rails s
+    depends_on:
+      - db
+      - bg-sync
+    volumes:
+      - services:/services
+    ports:
+      - "8080:3000"
+  db:
+    image: "postgres:11.2"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=auth
+volumes:
+  db-data:
+  services:
+
