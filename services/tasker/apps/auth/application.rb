@@ -72,9 +72,9 @@ module Auth
       #               See #scheme and #ssl?
       #   :httponly - Prevent JavaScript access (Boolean - true by default)
       #
-      # cookies true
+      cookies true
       # or
-      # cookies max_age: 300
+      cookies max_age: 300
 
       # Enable sessions
       # Argument: Symbol the Rack session adapter
@@ -82,8 +82,11 @@ module Auth
       #
       # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
       #
-      # sessions :cookie, secret: ENV['AUTH_SESSIONS_SECRET']
+      sessions :cookie, secret: ENV['AUTH_SESSIONS_SECRET']
 
+      middleware.use OmniAuth::Builder do
+        provider :doorkeeper, ENV["TASKER_CLIENT_KEY"], ENV["TASKER_CLIENT_SECRET"], scope: 'public write'
+      end
       # Configure Rack middleware for this application
       #
       # middleware.use Rack::Protection

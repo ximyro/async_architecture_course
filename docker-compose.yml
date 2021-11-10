@@ -21,7 +21,7 @@ services:
     command: "bg-sync"
   auth:
     image: async_architecture_course_base:latest
-    command: rails s
+    command: /bin/bash -c "rm -f /services/auth/tmp/pids/server.pid && cd auth && rails s -b 0.0.0.0"
     depends_on:
       - db
       - bg-sync
@@ -32,6 +32,7 @@ services:
       - "8080:3000"
   tasker:
     image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd tasker && bundle exec hanami server --host 0.0.0.0"
     depends_on:
       - db
       - bg-sync
@@ -39,7 +40,8 @@ services:
     volumes:
       - services:/services
     ports:
-      - "8081:2306"
+      - "8081:2300"
+    env_file: ./services/tasker/.env
     environment:
       - DATABASE_URL=postgresql://postgres@db/tasker_development
   db:
@@ -64,7 +66,7 @@ services:
       - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT

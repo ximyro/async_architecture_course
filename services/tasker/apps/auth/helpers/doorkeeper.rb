@@ -1,5 +1,3 @@
-require 'omniauth-oauth2'
-
 module OmniAuth
   module Strategies
     class Doorkeeper < OmniAuth::Strategies::OAuth2
@@ -9,17 +7,16 @@ module OmniAuth
       # This is where you pass the options you would pass when
       # initializing your consumer from the OAuth gem.
       option :client_options, {
-        :site => "http://localhost:8080/oauth/authorize",
-        :authorize_url => "http://:localhost:8080/oauth/authorize"
+        :site => "http://auth:3000/oauth/authorize",
+        :authorize_url => "http://localhost:8080/oauth/authorize"
       }
-
 
       # These are called after authentication has succeeded. If
       # possible, you should try to set the UID without making
       # additional calls (if the user id is returned with the token
       # or as a URI parameter). This may not be possible with all
       # providers.
-      uid{ raw_info['public_id'] }
+      uid { raw_info['public_id'] }
 
       info do
         {
@@ -35,3 +32,4 @@ module OmniAuth
       end
     end
   end
+end

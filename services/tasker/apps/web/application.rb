@@ -71,9 +71,9 @@ module Web
       #               See #scheme and #ssl?
       #   :httponly - Prevent JavaScript access (Boolean - true by default)
       #
-      # cookies true
+      cookies true
       # or
-      # cookies max_age: 300
+      cookies max_age: 300
 
       # Enable sessions
       # Argument: Symbol the Rack session adapter
@@ -81,7 +81,7 @@ module Web
       #
       # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
       #
-      # sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
+      sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
 
       # Configure Rack middleware for this application
       #
@@ -96,7 +96,6 @@ module Web
       # Argument: A symbol representation of a mime type, defaults to :html
       #
       # default_response_format :html
-
       ##
       # TEMPLATES
       #

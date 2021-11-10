@@ -8,7 +8,6 @@ require_relative '../apps/auth/application'
 Hanami.configure do
   mount Auth::Application, at: '/auth'
   mount Web::Application, at: '/'
-
   model do
     ##
     # Database adapter
