@@ -13,8 +13,7 @@ BoundedContext(createTaskContext, "Create task") {
     ReadModel(createdTask, "Task")
     Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Tasks.created")
     Event(taskAmountsCalculated, "Tasks.AmountsCalculated")
-    Event(taskCreated, "Tasks.created")
-    Command(taskReadyForAssign, "Update task amounts + status", "", "Event: Tasks.AmountsCalculated")
+    Event(taskCreated, "Tasks.Created")
 
     Lay_R(createTaskPolicy, createTask)    
     Lay_R(createTask, calculateTaskAmounts)
@@ -23,28 +22,21 @@ BoundedContext(createTaskContext, "Create task") {
     Lay_R(createTask, calculateTaskAmounts)
     Lay_D(taskCreated, createdTask)
     Lay_R(createTask, taskCreated)
-    Lay_R(taskAmountsCalculated, taskReadyForAssign)
 }
  
 BoundedContext(assignTaskContext, "Assign Task"){
     Policy(assignTaskPolicy, "User(manager)", "only Manager can assign a task")
-    Command(assignTasks, "Assign tasks", "", "User(manager)")
+    Command(assignTasks, "Assign tasks to employees", "", "User(manager)")
     ReadModel(ok, "Return OK to manager")
     Event(taskAssigned, "Tasks.Assigned")
-    Command(createChargeUserBalanceLog, "Creat a record for charging user's balance", "", "Event: Tasks.Assigned")
-    Command(incrementManagersEarnValue, "Increment managers earn counter", "", "Event: Tasks.Assigned")
-    Command(incrementUsersInDebt, "Increment users counter with debt", "", "Event: Tasks.Assigned")
-    Event(userBalanceChanged, "Users.BalanceCharged")
-    Command(createAuditRecord, "Create audit log", "", "Event: Users.BalanceCharged")
+    Command(createChargeUserBalanceLog, "Withdraw the amount from user's balance", "", "Event: Tasks.Assigned")
+    Event(userBalanceWasWithdrawn, "Users.BalanceWasWithdrawn")
 
     Lay_R(assignTaskPolicy, assignTasks)
     Lay_D(assignTasks, ok)
     Lay_R(assignTasks, taskAssigned)
-    Lay_R(taskAssigned, createChargeUserBalanceLogcreateChargeUserBalanceLog)
-    Lay_D(createChargeUserBalanceLog, incrementManagersEarnValue)
-    Lay_R(createChargeUserBalanceLogcreateChargeUserBalanceLog, userBalanceChanged)
-    Lay_D(incrementManagersEarnValue, incrementUsersInDebt)
-    Lay_R(userBalanceChanged, createAuditRecord)
+    Lay_R(taskAssigned, createChargeUserBalanceLog)
+    Lay_R(createChargeUserBalanceLog, userBalanceWasWithdrawn)
 }
 
 BoundedContext(finishTaskContext, "Finish Task"){
@@ -52,32 +44,14 @@ BoundedContext(finishTaskContext, "Finish Task"){
     Command(finishTask, "FinishTask", "", "User")
     ReadModel(showFinishedTask, "Task")
     Event(finishedTask, "Tasks.Completed")
-    Command(createIncreaseUserBalanceLogMessage, "Create the log message for increasing user balance(apply later)", "", "Event: Tasks.Completed")
-    Command(increaseUserBalance, "Increase User balance", "", "Event: Tasks.Completed")
-    Command(decreasetManagersEarnValue, "Decrease managers counter", "", "Event: Tasks.Completed")
-    Command(calculateTheMostExpensiveTask, "Calculate the most expensive task for day", "", "Event: Tasks.Completed")
-    Command(calculateTheMostExpensiveTaskForWeek, "Calculate the most expensive task for week", "", "Event: Analytics.ExpensiveTaskForDay")
-    Command(calculateTheMostExpensiveTaskForMonth, "Calculate the most expensive task for month", "", "Event: Analytics.ExpensiveTaskForWeek")
-    Event(userBalanceChangedAfterFinish, "Users.BalanceCharged")
-    Command(createAuditRecordAfterFinish, "Create audit log", "", "Event: Users.BalanceCharged")
-    Command(decreaseUsersInDebt, "Decrease users counter with debt", "", "Event: Tasks.Completed")
-    Event(expensiveForDay, "Analytics.ExpensiveTaskForDay")
-    Event(expensiveForWeek, "Analytics.ExpensiveTaskForWeek")
+    Command(increaseUserBalance, "Deposit user balance", "", "Event: Tasks.Completed")
+    Event(userBalanceChangedAfterFinish, "Users.BalanceWasDeposited")
 
     Lay_R(finishTaskPolicy, finishTask)
     Lay_D(finishTask, showFinishedTask)
     Lay_R(finishTask, finishedTask)
     Lay_R(finishedTask, increaseUserBalance)
-    Lay_D(increaseUserBalance, calculateTheMostExpensiveTask)
-    Lay_D(calculateTheMostExpensiveTask, decreaseUsersInDebt)
-    Lay_D(decreaseUsersInDebt, decreasetManagersEarnValue)
-    Lay_D(decreasetManagersEarnValue, createIncreaseUserBalanceLogMessage)
     Lay_R(increaseUserBalance, userBalanceChangedAfterFinish)
-    Lay_D(userBalanceChangedAfterFinish, expensiveForDay)
-    Lay_R(userBalanceChangedAfterFinish, createAuditRecordAfterFinish)
-    Lay_R(expensiveForDay, calculateTheMostExpensiveTaskForWeek)
-    Lay_R(calculateTheMostExpensiveTaskForWeek, expensiveForWeek)
-    Lay_R(expensiveForWeek, calculateTheMostExpensiveTaskForMonth) 
 }
 
 BoundedContext(createUser, "Create User") {
@@ -90,33 +64,5 @@ BoundedContext(createUser, "Create User") {
 	Lay_R(createUserCmd, userCreated)
 	Lay_R(userCreated, copyUser)
 }
-
-BoundedContext(createUser, "User role changed") {
-	Policy(createUserPolicy, "User(manager)", "Manager creates a user")
- 	Command(createUserCmd, "CreateUser", "", "User(manager)")
-	Event(userCreated, "Users.RoleChanged")
-	Command(unassignTask,"UnAssignTasks", "", "Event: Users.RoleChanged")
-	Command(updateUser, "Copy User with Role", "", "Event: Users.Created")
-
-	Lay_R(createUserPolicy, createUserCmd)
-	Lay_R(createUserCmd, userCreated)
-	Lay_R(userCreated, unassignTask)
-	Lay_D(unassignTask, updateUser)
-}
-
-
-BoundedContext(finishOfDay, "Pay users per day") {
-  Command(payUsersPerDay, "Pay Users for the day", "", "Cron job")
-  Event(dailyPaidAmoount, "Users.DailyPaidAmount")
-  Command(notifyUser, "Send email to a user", "", "Event: Users.DailyPaidAmount")
-  Command(setZeroBalance, "Set user balace to zero", "", "Event: Users.DailyPaidAmount")
-  Command(createAuditDailyLog, "Create audit log", "", "Event: Users.DailyPaidAmount")
-
-  Lay_R(payUsersPerDay, dailyPaidAmoount)
-  Lay_R(dailyPaidAmoount, notifyUser)
-  Lay_D(notifyUser, setZeroBalance)
-  Lay_D(setZeroBalance, createAuditDailyLog)
-}
-
 
 @enduml
