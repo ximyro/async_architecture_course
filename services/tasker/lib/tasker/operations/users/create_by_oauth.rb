@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "../../tasker/repositories/user_repository"
+require_relative "../../repositories/user_repository"
 
-module Users
-  module Operations
+module Operations
+  module Users
     class CreateByOauth < ::Libs::Operation
       def call(provider:, payload:)
         user = repo.find_by_auth_identity(provider, auth_identity_params(payload))
@@ -11,7 +11,7 @@ module Users
           user = yield persist(provider, payload)
         end
 
-        Success(user)
+        Success(user.id)
       end
 
       private
@@ -19,7 +19,7 @@ module Users
       def persist(provider, payload)
         Success(
           repo.create_with_identity(
-            Core::Types::AuthIdentityProvider(provider),
+            provider,
             user_params(payload),
             auth_identity_params(payload)
           )
@@ -46,7 +46,7 @@ module Users
       end
 
       def repo
-        @_repo ||= nil
+        @_repo ||= UserRepository.new
       end
     end
   end

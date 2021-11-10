@@ -14,7 +14,6 @@ module Auth
           case result
           when Success
             session[:user] = result.value!
-
             redirect_to '/'
           when Failure
             redirect_to routes.login_path
@@ -24,7 +23,7 @@ module Auth
         private
 
         def operation
-          @_operation ||= Users::CreateByOauth
+          @_operation ||= Operations::Users::CreateByOauth.new
         end
       end
     end
