@@ -1,5 +1,9 @@
 # Awesome Task Exchange System
 
-## Diagrams
+## Первая версия архитектуры
 
-[Diagrams](./diagrams/Diagrams.md)
+[Первая версия](./first-iteration/Diagrams.md)
+
+## Новая версия архитектуры
+
+[новая версия](./docs/docs.md)

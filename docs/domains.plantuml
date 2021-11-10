@@ -1,0 +1,65 @@
+@startuml Domains
+
+artifact AuthDomain {
+    rectangle User
+    rectangle "User role" as ur
+    rectangle "User auth information" as uai
+}
+
+artifact TasksDomain {
+    rectangle Task
+    rectangle Status
+    rectangle UserID
+    rectangle AssignedUserID
+}
+
+artifact AccountingDomain {
+    rectangle Account
+    rectangle TaskCopyForAccouting
+    rectangle UserIDForAccounting
+    rectangle UserEarnPerDay
+    rectangle "User Balance" as ub
+    rectangle "User Balance audit" as uba
+    rectangle Notification
+    rectangle PayPerDay
+    rectangle ManagerEarnPerDay_Copy
+    rectangle ApplyFeeAmountLog
+    rectangle ApplyAmountLog
+    rectangle TaskCopyForAssignment	
+    rectangle Amount
+    rectangle AssignFee
+}
+
+artifact AnalyticsDomain {
+    rectangle UsersinDebt
+    rectangle UserIdForAnalytics
+    rectangle TaskForAnalytics
+    rectangle TheMostExpensiveTask
+    rectangle ManagerEarnPerDay
+    rectangle ManagersLosePerDay
+}
+
+
+User --> ur
+User --> uai
+User --> ub
+User --> uba
+User --> Task
+Task --> Status
+Task --> Amount
+Task --> UserID
+Task --> AssignedUserID
+Task --> AssignFee
+uba --> UserEarnPerDay
+uba --> ManagerEarnPerDay
+uba --> ManagersLosePerDay
+UserEarnPerDay --> Notification
+User --> UserIdForAnalytics
+TaskForAnalytics --> TheMostExpensiveTask
+Task --> ApplyFeeAmountLog
+Task --> ApplyAmountLog
+AssignFee --> ApplyFeeAmountLog
+Task --> TaskForAnalytics
+User --> UsersinDebt
+Amount --> ApplyAmountLog
+@enduml

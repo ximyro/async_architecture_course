@@ -1,0 +1,18 @@
+@startuml Services
+rectangle Tasker
+rectangle Auth
+rectangle Accounting
+rectangle Analytics
+rectangle User
+
+User <--> Tasker
+User <--> Accounting
+User <--> Analytics
+Tasker <-[dotted]-> Auth : async way
+Accounting <-[dotted]-> Auth : async way
+Analytics <-[dotted]-> Auth : async communication
+
+Tasker <-[dotted]-> Accounting : async way
+Accounting <-[dotted]- Analytics : async way
+
+@enduml

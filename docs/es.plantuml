@@ -1,0 +1,68 @@
+@startuml task_tracker
+!include ../es-plantuml/ES.puml
+
+LAYOUT_TOP_DOWN()
+
+LAYOUT_WITH_LEGEND()
+
+title **Awesome task tracker**
+
+BoundedContext(createTaskContext, "Create task") {
+    Policy(createTaskPolicy, "User", "Everyone can create a task")
+    Command(createTask, "Create task", "", "User")
+    ReadModel(createdTask, "Task")
+    Command(calculateTaskAmounts, "Calculate task amounts", "", "Event: Tasks.created")
+    Event(taskAmountsCalculated, "Tasks.AmountsCalculated")
+    Event(taskCreated, "Tasks.Created")
+
+    Lay_R(createTaskPolicy, createTask)    
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_R(calculateTaskAmounts, taskAmountsCalculated)
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_R(createTask, calculateTaskAmounts)
+    Lay_D(taskCreated, createdTask)
+    Lay_R(createTask, taskCreated)
+}
+ 
+BoundedContext(assignTaskContext, "Assign Task"){
+    Policy(assignTaskPolicy, "User(manager)", "only Manager can assign a task")
+    Command(assignTasks, "Assign tasks to employees", "", "User(manager)")
+    ReadModel(ok, "Return OK to manager")
+    Event(taskAssigned, "Tasks.Assigned")
+    Command(createChargeUserBalanceLog, "Withdraw the amount from user's balance", "", "Event: Tasks.Assigned")
+    Event(userBalanceWasWithdrawn, "Users.BalanceWasWithdrawn")
+
+    Lay_R(assignTaskPolicy, assignTasks)
+    Lay_D(assignTasks, ok)
+    Lay_R(assignTasks, taskAssigned)
+    Lay_R(taskAssigned, createChargeUserBalanceLog)
+    Lay_R(createChargeUserBalanceLog, userBalanceWasWithdrawn)
+}
+
+BoundedContext(finishTaskContext, "Finish Task"){
+    Policy(finishTaskPolicy, "User", "Everyone can finish a task")
+    Command(finishTask, "FinishTask", "", "User")
+    ReadModel(showFinishedTask, "Task")
+    Event(finishedTask, "Tasks.Completed")
+    Command(increaseUserBalance, "Deposit user balance", "", "Event: Tasks.Completed")
+    Event(userBalanceChangedAfterFinish, "Users.BalanceWasDeposited")
+
+    Lay_R(finishTaskPolicy, finishTask)
+    Lay_D(finishTask, showFinishedTask)
+    Lay_R(finishTask, finishedTask)
+    Lay_R(finishedTask, increaseUserBalance)
+    Lay_R(increaseUserBalance, userBalanceChangedAfterFinish)
+}
+
+BoundedContext(createUser, "Create User") {
+	Policy(createUserPolicy, "User(manager)", "Manager creates a user")
+ 	Command(createUserCmd, "CreateUser", "", "User(manager)")
+	Event(userCreated, "Users.Created")
+	Command(copyUser, "Copy User with Role", "", "Event: Users.Created")
+
+	Lay_R(createUserPolicy, createUserCmd)
+	Lay_R(createUserCmd, userCreated)
+	Lay_R(userCreated, copyUser)
+}
+
+@enduml
