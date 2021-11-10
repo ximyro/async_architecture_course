@@ -13,12 +13,6 @@ artifact TasksDomain {
     rectangle AssignedUserID
 }
 
-artifact PricingDomain {
-	rectangle TaskCopyForAssignment	
-    rectangle Amount
-    rectangle AssignFee
-}
-
 artifact AccountingDomain {
     rectangle Account
     rectangle TaskCopyForAccouting
@@ -31,6 +25,9 @@ artifact AccountingDomain {
     rectangle ManagerEarnPerDay_Copy
     rectangle ApplyFeeAmountLog
     rectangle ApplyAmountLog
+    rectangle TaskCopyForAssignment	
+    rectangle Amount
+    rectangle AssignFee
 }
 
 artifact AnalyticsDomain {
@@ -62,5 +59,7 @@ TaskForAnalytics --> TheMostExpensiveTask
 Task --> ApplyFeeAmountLog
 Task --> ApplyAmountLog
 AssignFee --> ApplyFeeAmountLog
+Task --> TaskForAnalytics
+User --> UsersinDebt
 Amount --> ApplyAmountLog
 @enduml

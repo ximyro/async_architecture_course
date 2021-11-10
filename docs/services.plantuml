@@ -3,7 +3,6 @@ rectangle Tasker
 rectangle Auth
 rectangle Accounting
 rectangle Analytics
-rectangle Pricing
 rectangle User
 
 User <--> Tasker
@@ -15,7 +14,5 @@ Analytics <-[dotted]-> Auth : async communication
 
 Tasker <-[dotted]-> Accounting : async way
 Accounting <-[dotted]- Analytics : async way
-
-Pricing <-[dotted]-> Accounting : async way
 
 @enduml
