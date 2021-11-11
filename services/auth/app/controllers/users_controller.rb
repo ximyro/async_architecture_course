@@ -56,7 +56,7 @@ class UsersController < ApplicationController
             role: @user.role
           }
         }
-        Producer.call(event.to_json, topic: 'users-stream')
+        Producer.call(event.to_json, 'users-stream')
         if new_role
           event = {
             event_name: "Users.RoleChanged",
