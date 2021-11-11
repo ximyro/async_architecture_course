@@ -12,6 +12,8 @@ gem 'jquery-hanami'
 gem 'dry-monads'
 gem 'omniauth'
 gem "omniauth-accounts"
+gem "karafka"
+gem 'dry-configurable', '0.8'
 
 group :development do
   # Code reloading
