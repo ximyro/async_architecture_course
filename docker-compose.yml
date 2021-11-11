@@ -1,0 +1,75 @@
+version: "3.4"
+services:
+  base:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - services:/services
+    depends_on:
+      - bg-sync
+  bg-sync:
+    image: cweagans/bg-sync
+    volumes:
+      - ./services:/source
+      - services:/services
+    environment:
+      - SYNC_DESTINATION=/services
+      - SYNC_MAX_INOTIFY_WATCHES=40000
+      - SYNC_VERBOSE=1
+    privileged: true
+    command: "bg-sync"
+  auth:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "rm -f /services/auth/tmp/pids/server.pid && cd auth && rails s -b 0.0.0.0"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    ports:
+      - "8080:3000"
+  tasker:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd tasker && bundle exec hanami server --host 0.0.0.0"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    ports:
+      - "8081:2300"
+    env_file: ./services/tasker/.env
+  db:
+    image: "postgres:11.2"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=auth
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+volumes:
+  db-data:
+  services:
+
