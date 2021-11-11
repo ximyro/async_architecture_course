@@ -3,6 +3,10 @@ class UserRepository < Hanami::Repository
     has_many :auth_identities
   end
 
+  def find_by_public_id(public_id)
+    root.where(public_id: public_id).first
+  end
+
   def find_by_auth_identity(provider, auth_identity)
     root
       .join(auth_identities)
