@@ -1,5 +1,0 @@
-/public/assets*
-/tmp
-.env.local
-.env.*.local
-.env
