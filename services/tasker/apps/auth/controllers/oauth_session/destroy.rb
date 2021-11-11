@@ -5,8 +5,8 @@ module Auth
         include Auth::Action
 
         def call(_params = {})
-          session[:user] = nil
-          redirect_to routes.login_path
+          session[:user_id] = nil
+          redirect_to '/auth/signin'
         end
       end
     end

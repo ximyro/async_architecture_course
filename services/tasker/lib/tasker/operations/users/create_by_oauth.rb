@@ -8,19 +8,24 @@ module Operations
       def call(provider:, payload:)
         user = repo.find_by_auth_identity(provider, auth_identity_params(payload))
         if user.nil?
-          user = yield persist(provider, payload)
+          user = repo.find_by_public_id(payload['info']['public_id'])
+          if !user
+            user = repo.create(user_params(payload))
+          end
+
+          yield persist(provider, user, payload)
         end
 
-        Success(user.id)
+        Success(user)
       end
 
       private
 
-      def persist(provider, payload)
+      def persist(provider, user, payload)
         Success(
           repo.create_with_identity(
             provider,
-            user_params(payload),
+            user,
             auth_identity_params(payload)
           )
         )

@@ -6,4 +6,4 @@
 get '/auth/:provider/callback', to: "oauth_session#create"
 post '/oauth_session', to: 'oauth_session#create'
 get '/signin', to: 'signin#index'
-delete '/oauth_session/:id', to: 'oauth_session#destroy'
+get '/oauth_session/destroy', to: 'oauth_session#destroy'

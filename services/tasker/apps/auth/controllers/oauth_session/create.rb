@@ -13,7 +13,8 @@ module Auth
 
           case result
           when Success
-            session[:user] = result.value!
+            user = result.value!
+            session[:user_id] = user.id
             redirect_to '/'
           when Failure
             redirect_to routes.login_path
