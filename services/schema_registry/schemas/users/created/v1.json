@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "event_name": {
+            "enum": ["Users.Created"]
+        },
+        "event_version": {
+            "enum": ["v1"]
+        },
+        "event_time":    { "type": "string" },
+        "producer":      { "type": "string" },
+        "event_id":      { "type": "string"  }, 
+        "data": {
+            "type": "object",
+            "properties": {
+                "public_id": {
+                    "description": "The identifier of a user",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "User's email",
+                    "type": ["string", null]
+                },
+                "role": {
+                    "description": "User's role",
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "User's full name",
+                    "type": "string"
+                }
+            },
+            "required": [ "public_id", "email", "role" ]
+        }
+    },
+    "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+}

@@ -1,0 +1,29 @@
+{
+    "type": "object",
+    "properties": {
+        "event_name": {
+            "enum": ["Users.RoleChanged"]
+          },
+        "event_version": {
+            "enum": ["v1"]
+        },
+        "event_time":    { "type": "string" },
+        "producer":      { "type": "string" },
+        "event_id":      { "type": "string" }, 
+        "data": {
+            "type": "object",
+            "properties": {
+                "public_id": {
+                    "description": "The identifier of a user",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "User's role",
+                    "type": "string"
+                }
+            },
+            "required": [ "public_id", "role" ]
+        }
+    },
+    "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+}
