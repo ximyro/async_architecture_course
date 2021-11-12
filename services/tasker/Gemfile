@@ -16,6 +16,7 @@ gem "karafka"
 gem 'dry-configurable', '0.8'
 gem 'ruby-enum'
 gem 'waterdrop'
+gem 'schema_registry', path: '../schema_registry'
 
 group :development do
   # Code reloading

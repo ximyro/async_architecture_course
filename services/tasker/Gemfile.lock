@@ -1,3 +1,9 @@
+PATH
+  remote: ../schema_registry
+  specs:
+    schema_registry (0.1.0)
+      json-schema
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -169,6 +175,8 @@ GEM
     inflecto (0.0.2)
     jquery-hanami (0.1.0)
       hanami-assets
+    json-schema (2.8.1)
+      addressable (>= 2.4)
     jwt (2.3.0)
     karafka (1.2.13)
       activesupport (>= 4.0)
@@ -320,6 +328,7 @@ DEPENDENCIES
   rspec
   ruby-enum
   ruby_jard
+  schema_registry!
   shotgun
   slim
   waterdrop

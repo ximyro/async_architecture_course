@@ -10,6 +10,7 @@ module Web
           tasks.each do |task|
             task_repo.update(task.id, user_id: random_user_id)
             event_repo.task_assigned(task)
+            event_repo.task_updated(task)
           end
           redirect_to '/'
         end

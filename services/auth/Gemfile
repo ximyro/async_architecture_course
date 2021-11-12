@@ -20,6 +20,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'devise'
 gem 'doorkeeper'
 gem 'waterdrop'
+gem 'schema_registry', path: '../schema_registry'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

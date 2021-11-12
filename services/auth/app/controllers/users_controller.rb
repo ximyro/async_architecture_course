@@ -49,6 +49,7 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         event = {
           event_name: "Users.Updated",
+          event_version: "v1",
           data: {
             public_id: @user.public_id,
             email: @user.email,
@@ -56,16 +57,17 @@ class UsersController < ApplicationController
             role: @user.role
           }
         }
-        Producer.call(event.to_json, 'users-stream')
+        Producer.call(event, 'users-stream')
         if new_role
           event = {
             event_name: "Users.RoleChanged",
+            event_version: "v1",
             data: {
               public_id: @user.public_id,
               role: new_role
             }
           }
-          Producer.call(event.to_json, "users")
+          Producer.call(event, "users")
         end
         format.html { redirect_to @user, notice: "User was successfully updated." }
         format.json { render :show, status: :ok, location: @user }
@@ -83,11 +85,12 @@ class UsersController < ApplicationController
     if @user.destroy
       event = {
         event_name: "Users.Deleted",
+        event_version: "v1",
         data: {
           public_id: user_public_id
         }
       }
-      Producer.call(event.to_json, "users-stream")
+      Producer.call(event, "users-stream")
     end
 
     respond_to do |format|

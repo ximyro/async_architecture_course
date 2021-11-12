@@ -7,7 +7,8 @@ module Web
 
         def call(params)
           task = task_repo.update(params[:id], status: 'completed')
-          event_repo.task_completed(task)
+          event_repo.task_completed(task, task.user_id)
+          event_repo.task_updated(task)
           redirect_to '/'
         end
 
