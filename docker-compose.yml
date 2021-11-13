@@ -52,6 +52,50 @@ services:
     volumes:
       - services:/services
     env_file: ./services/tasker/.env
+  accounting:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd accounting && bundle exec hanami server --host 0.0.0.0"
+    depends_on:
+      - db
+      - bg-sync
+      - kafkaG
+    volumes:
+      - services:/services
+    ports:
+      - "8082:2300"
+    env_file: ./services/accounting/.env
+  accounting_kafka:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd tasker && ./bin/karafka server --no-daemon"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    env_file: ./services/accounting/.env
+  analytics:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd analytics && bundle exec hanami server --host 0.0.0.0"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    ports:
+      - "8083:2300"
+    env_file: ./services/analytics/.env
+  analytics_kafka:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd analytics && ./bin/karafka server --no-daemon"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    env_file: ./services/analytics/.env
   db:
     image: "postgres:11.2"
     volumes:

@@ -1,0 +1,3 @@
+project=analytics
+test=rspec
+template=slim
