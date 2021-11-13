@@ -8,10 +8,10 @@ module Operations
       def call(provider:, payload:)
         user = repo.find_by_auth_identity(provider, auth_identity_params(payload))
         if user.nil?
-          user = repo.find_by_public_id(payload['info']['public_id'])
-          if !user
-            user = repo.create(user_params(payload))
-          end
+          user = repo.find_or_create_by_public_id(
+            payload['info']['public_id'],
+            user_params(payload)
+          )
 
           yield persist(provider, user, payload)
         end

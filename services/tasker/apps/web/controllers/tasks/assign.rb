@@ -4,31 +4,21 @@ module Web
       class Assign
         include Web::Action
         include AuthorizationHelper
+        include Dry::Monads::Result::Mixin
 
         def call(_params)
-          tasks = task_repo.all_opened_tasks
+          tasks = task_repo.all_opened
           tasks.each do |task|
-            task_repo.update(task.id, user_id: random_user_id)
-            event_repo.task_assigned(task)
-            event_repo.task_updated(task)
+            result = operation.call(task)
+            if result == Failure
+              Hanami.logger.error "can't assign task with id #{task.id}"
+            end
           end
           redirect_to '/'
         end
 
-        def task_repo
-          @_task_repo ||= TaskRepository.new
-        end
-
-        def user_repo
-          @_user_repo ||= UserRepository.new
-        end
-
-        def random_user_id
-          user_repo.get_random_user&.id
-        end
-
-        def event_repo
-          @_event_repo ||= EventRepository.new
+        def operation
+          @_operation ||= Operations::Tasks::Assign.new
         end
       end
     end

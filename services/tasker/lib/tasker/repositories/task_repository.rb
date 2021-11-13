@@ -3,15 +3,15 @@ class TaskRepository < Hanami::Repository
     belongs_to :user
   end
 
-  def find_user_tasks(user)
+  def all_with_user(user)
     aggregate(:user).where(user_id: user.id)
   end
 
-  def all_opened_tasks
+  def all_opened
     root.where("status = 'created'")
   end
 
-  def find_with_users
+  def all
     aggregate(:user)
   end
 end

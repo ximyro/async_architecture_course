@@ -30,18 +30,13 @@ class Producer
     end
 
     def kafka_client
-      return @_kafka_client if @_kafka_client.present?
-
-      @_kafka_client = WaterDrop::Producer.new
-
-      @_kafka_client.setup do |config|
+      @_kafka_client ||= WaterDrop::Producer.new do |config|
         config.deliver = true
         config.kafka = {
           'bootstrap.servers': 'kafka:9092',
           'request.required.acks': 1
         }
       end
-      @_kafka_client
     end
   end
 end

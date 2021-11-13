@@ -23,7 +23,7 @@ module Web
         end
 
         def random_user_id
-          user_repo.get_random_user&.id
+          user_repo.random_user&.id
         end
 
         def event_repo
