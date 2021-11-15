@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title
+      | Auth
+    = favicon
+
+    = stylesheet 'bootstrap'
+  body
+    = yield
+
+    = javascript 'jquery', 'bootstrap', 'main'
