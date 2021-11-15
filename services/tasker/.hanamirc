@@ -1,0 +1,3 @@
+project=tasker
+test=rspec
+template=slim

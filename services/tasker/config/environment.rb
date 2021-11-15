@@ -1,9 +1,11 @@
 require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
+require_relative '../lib/producer'
 require_relative '../lib/tasker'
 require_relative '../apps/web/application'
 require_relative '../apps/auth/application'
+require_relative '../apps/kafka_app/application'
 
 Hanami.configure do
   mount Auth::Application, at: '/auth'

@@ -1,0 +1,14 @@
+h1 Create Task
+
+
+= form_for :task, '/tasks' do \
+  div class: 'form-group' do \
+    label :title; \
+    text_field :title, class: 'form-control' \
+  end; \
+  div class: 'form-group' do \
+    label :description; \
+    textarea :description, name: 'task[description]', class: 'form-control' \
+  end; \
+  submit 'Submit', class: 'btn btn-primary' \
+end 

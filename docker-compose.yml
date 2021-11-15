@@ -58,7 +58,7 @@ services:
     depends_on:
       - db
       - bg-sync
-      - kafka
+      - kafkaG
     volumes:
       - services:/services
     ports:

@@ -263,6 +263,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.3)
+    ruby-enum (0.9.0)
+      i18n
     ruby-kafka (0.7.10)
       digest-crc
     ruby2_keywords (0.0.5)
@@ -316,9 +318,11 @@ DEPENDENCIES
   puma
   rake
   rspec
+  ruby-enum
   ruby_jard
   shotgun
   slim
+  waterdrop
 
 BUNDLED WITH
    2.1.4
