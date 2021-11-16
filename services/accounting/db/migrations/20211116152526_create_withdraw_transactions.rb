@@ -1,12 +1,12 @@
 Hanami::Model.migration do
   change do
-    create_table :users do
+    create_table :withdraw_transactions do
       primary_key :id
 
-      column :full_name, String
-      column :public_id, String, null: false, unique: true
-      column :email, String
-      column :role, String
+      foreign_key :user_id, :users
+      foreign_key :task_id, :tasks
+      column :amount, 'decimal', null: false
+
       column :created_at, DateTime, null: false
       column :updated_at, DateTime, null: false
     end

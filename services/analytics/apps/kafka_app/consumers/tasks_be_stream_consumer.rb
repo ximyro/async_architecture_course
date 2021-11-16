@@ -1,4 +1,4 @@
-class TasksStreamConsumer < Karafka::BaseConsumer
+class TasksBEStreamConsumer < Karafka::BaseConsumer
   def consume
     params_batch.each do |message|
       KafkaApp::Application.logger.info "Receive a message #{message} from the tasks-stream"

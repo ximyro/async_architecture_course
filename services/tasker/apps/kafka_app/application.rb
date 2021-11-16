@@ -1,7 +1,5 @@
 require_relative './consumers/users_stream_consumer'
 
-Karafka::Loader.load(Karafka::App.root)
-
 module KafkaApp
   class Application < Karafka::App
     setup do |config|

@@ -30,4 +30,22 @@ class UserRepository < Hanami::Repository
   def create_with_identity(provider, user, auth_identity)
     assoc(:auth_identities, user).add(**auth_identity, provider: provider)
   end
+
+  def create_or_update_by_public_id(public_id, data)
+    user = find_by_public_id(public_id)
+    if user
+      return update(
+        user.id,
+        role: data['role'],
+        email: data['email'],
+        full_name: data['full_name']
+      )
+    end
+    create(
+      role: data['role'],
+      email: data['email'],
+      full_name: data['full_name'],
+      public_id: data['public_id']
+    )
+  end
 end

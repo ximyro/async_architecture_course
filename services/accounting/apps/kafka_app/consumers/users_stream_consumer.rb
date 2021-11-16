@@ -7,46 +7,14 @@ class UsersStreamConsumer < Karafka::BaseConsumer
         return nil
       end
 
+      data = message['data']
       case message['event_name']
-      when 'Users.Created'
-        create_or_update_user(message['data'])
-      when 'Users.Updated'
-        update_user(message['data'])
+      when 'Users.Created', 'Users.Updated'
+        repo.create_or_update_by_public_id(data&.dig('public_id'), data)
       end
+    rescue => e
+      KafkaApp::Application.logger.error "can't create or update user: #{data}: #{e}"
     end
-  end
-
-  def create_or_update_user(data)
-    user = repo.find_by_public_id(data['public_id'])
-    if user
-      repo.update(
-        user.id,
-        role: data['role'],
-        email: data['email'],
-        full_name: data['full_name']
-      )
-    else
-      repo.create(
-        role: data['role'],
-        email: data['email'],
-        full_name: data['full_name'],
-        public_id: data['public_id']
-      )
-    end
-  rescue => e
-    KafkaApp::Application.logger.error "can't create or update user: #{data}: #{e}"
-  end
-
-  def update_user(data)
-    user = repo.find_by_public_id(data['public_id'])
-    return nil unless user
-
-    repo.update(
-      user.id,
-      role: data['role'],
-      email: data['email'],
-      full_name: data['full_name']
-    )
   end
 
   def repo

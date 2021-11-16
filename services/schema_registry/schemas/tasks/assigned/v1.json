@@ -22,7 +22,7 @@
                 "type": "string"
             }
         },
-        "required": [ "title", "assigned_user_id", "public_id", "status" ]
+        "required": ["assigned_user_id", "public_id" ]
       },
       "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
     }

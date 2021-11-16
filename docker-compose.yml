@@ -66,7 +66,7 @@ services:
     env_file: ./services/accounting/.env
   accounting_kafka:
     image: async_architecture_course_base:latest
-    command: /bin/bash -c "cd tasker && ./bin/karafka server --no-daemon"
+    command: /bin/bash -c "cd accounting && ./bin/karafka server --no-daemon"
     depends_on:
       - db
       - bg-sync
