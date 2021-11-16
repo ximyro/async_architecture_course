@@ -9,8 +9,6 @@ Hanami::Model.migration do
       column :public_id, String, null: false, unique: true
       column :created_at, DateTime, null: false
       column :updated_at, DateTime, null: false
-      column :created_at, DateTime, null: false
-      column :updated_at, DateTime, null: false
     end
   end
 end

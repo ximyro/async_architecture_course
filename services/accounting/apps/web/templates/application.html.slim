@@ -13,12 +13,6 @@ html
           h2 Current User
           p
             = current_user.to_hash
-      - if current_user.role == "manager"
-        div.btn-group
-          a.btn.btn-secondary[href="/tasks/new"] New task
-          = form_for :task, '/tasks/assign' do \
-            submit 'Assign tasks', class: 'btn btn-secondary' \
-          end
       = yield
 
     = javascript 'jquery', 'bootstrap', 'main'
