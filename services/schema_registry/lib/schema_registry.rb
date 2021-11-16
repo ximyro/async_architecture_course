@@ -28,6 +28,8 @@ module SchemaRegistry
         "tasks/assigned"
       when "Tasks.Completed"
         "tasks/completed"
+      when "Tasks.Begun"
+        "tasks/begun"
       when "Users.Created"
         "users/created"
       when "Users.Deleted"

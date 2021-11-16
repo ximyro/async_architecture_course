@@ -20,6 +20,10 @@ module Web
         def operation
           @_operation ||= Operations::Tasks::Assign.new
         end
+
+        def task_repo
+          @_task_repo ||= TaskRepository.new
+        end
       end
     end
   end

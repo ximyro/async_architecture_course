@@ -1,30 +1,17 @@
 # frozen_string_literal: true
 require_relative "base"
 require_relative "../../repositories/user_repository"
-require_relative "../../repositories/event_repository"
 
 module Operations
   module Tasks
     class Assign < Base
       def call(task)
-        task_repo.update(task.id, user_id: random_user_id)
-        event_repo.task_assigned(task)
-        event_repo.task_updated(task)
+        task_repo.random_assinge(task.id)
+        task = task_repo.find_with_user(task.id)
+        event = task.to_h.merge(assigned_user_id: task.user.public_id)
+        Producer.call(Events::TaskUpdated.new(event.to_h), 'tasks-stream')
+        Producer.call(Events::TaskAssigned.new(event.to_h), 'tasks')
       end
-
-      def user_repo
-        @_user_repo ||= UserRepository.new
-      end
-
-      def random_user_id
-        user_repo.random_user&.id
-      end
-
-      def event_repo
-        @_event_repo ||= EventRepository.new
-      end
-
-      private :random_user_id, :user_repo
     end
   end
 end

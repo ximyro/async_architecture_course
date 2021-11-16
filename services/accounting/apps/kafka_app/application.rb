@@ -1,4 +1,6 @@
 require_relative './consumers/users_stream_consumer'
+require_relative './consumers/tasks_stream_consumer'
+require_relative './consumers/tasks_be_stream_consumer'
 
 Karafka::Loader.load(Karafka::App.root)
 
@@ -6,7 +8,7 @@ module KafkaApp
   class Application < Karafka::App
     setup do |config|
       config.kafka.seed_brokers = %w[kafka://kafka:9092]
-      config.client_id = 'tasker'
+      config.client_id = 'accounting'
       config.backend = :inline
       config.batch_fetching = true
       # Uncomment this for Rails app integration
@@ -28,16 +30,12 @@ module KafkaApp
       topic :'users-stream' do
         consumer UsersStreamConsumer
       end
-
-      # consumer_group :bigger_group do
-      #   topic :test do
-      #     consumer TestConsumer
-      #   end
-      #
-      #   topic :test2 do
-      #     consumer Test2Consumer
-      #   end
-      # end
+      topic :'tasks-stream' do
+        consumer TasksStreamConsumer
+      end
+      topic :tasks do
+        consumer TasksBEStreamConsumer
+      end
     end
   end
 end

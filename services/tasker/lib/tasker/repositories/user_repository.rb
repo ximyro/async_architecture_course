@@ -30,8 +30,4 @@ class UserRepository < Hanami::Repository
   def create_with_identity(provider, user, auth_identity)
     assoc(:auth_identities, user).add(**auth_identity, provider: provider)
   end
-
-  def random_user
-    users.read('SELECT * FROM users ORDER BY random() LIMIT 1;').one
-  end
 end

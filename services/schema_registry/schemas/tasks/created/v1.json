@@ -19,7 +19,7 @@
         },
         "public_id": {
           "description": "The identifier of task",
-          "type": "integer"
+          "type": "string"
         },
         "description": {
             "description": "Task description",
@@ -27,7 +27,7 @@
         },
         "assigned_user_id": {
             "description": "The identifier of assigned user",
-            "type": "integer"
+            "type": "string"
         },
         "status": {
           "description": "The identifier of assigned user",

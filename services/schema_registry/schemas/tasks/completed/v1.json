@@ -14,12 +14,12 @@
         "type": "object",
         "properties": {
             "public_id": {
-            "description": "The identifier of task",
-            "type": "integer"
+              "description": "The identifier of task",
+              "type": "string"
             },
             "completed_by_user_id": {
                 "description": "The identifier of user who finished the task",
-                "type": "integer"
+                "type": "string"
             }
         },
         "required": ["completed_by_user_id", "public_id"]
