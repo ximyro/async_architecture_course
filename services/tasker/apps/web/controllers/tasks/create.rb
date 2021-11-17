@@ -13,9 +13,8 @@ module Web
           end
           task = task_repo.find_with_user(task.id)
           event = task.to_h.merge(assigned_user_id: task.user.public_id)
+          CostCreator.call(event)
           Producer.call(Events::TaskCreated.new(event.to_h), 'tasks-stream')
-          Producer.call(Events::TaskBegun.new(event.to_h), 'tasks')
-          Producer.call(Events::TaskAssigned.new(event.to_h), 'tasks')
           redirect_to '/'
         end
 

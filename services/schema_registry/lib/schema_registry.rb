@@ -38,6 +38,10 @@ module SchemaRegistry
         "users/role_changed"
       when "Users.Updated"
         "users/updated"
+      when "Users.BalanceWithdrawn"
+        "users/balance_with_drawn"
+      when "Users.BalanceAccrued"
+        "users/balance_accrued"
       else
         raise "Unsupported event: #{event_name}"
       end

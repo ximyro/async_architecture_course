@@ -19,6 +19,14 @@ class UserRepository < Hanami::Repository
     create(params)
   end
 
+  def accure_balance(user_id, amount)
+    root.update("balance = balance + #{amount} WHERE id = #{user_id}")
+  end
+
+  def withdraw_balance(user_id, amount)
+    root.update("balance = balance - #{amount} WHERE id = #{user_id}")
+  end
+
   def find_by_auth_identity(provider, auth_identity)
     users
       .join(auth_identities)
