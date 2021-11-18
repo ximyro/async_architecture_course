@@ -1,4 +1,4 @@
-class TasksBEStreamConsumer < Karafka::BaseConsumer
+class AnalyticsStreamConsumer < Karafka::BaseConsumer
   include Dry::Monads::Result::Mixin
   def consume
     params_batch.each do |message|

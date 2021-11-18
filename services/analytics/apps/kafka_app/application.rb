@@ -1,6 +1,4 @@
-require_relative './consumers/users_stream_consumer'
-require_relative './consumers/tasks_stream_consumer'
-require_relative './consumers/tasks_be_stream_consumer'
+Dir["#{File.dirname(__FILE__)}/consumers/*.rb"].each { |file| require file }
 
 module KafkaApp
   class Application < Karafka::App

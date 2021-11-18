@@ -8,9 +8,8 @@
 # set :output, "/path/to/my/cron_log.log"
 
 every 1.day, at: '1:30 am' do
-  rake ""
+  rake "billing:close_billing_cycle_period"
 end
-CloseBillinCyclePeriud
 #
 # every 4.days do
 #   runner "AnotherModel.prune_old_records"

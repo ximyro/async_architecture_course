@@ -76,7 +76,7 @@ services:
     env_file: ./services/accounting/.env
   accounting_cron:
     image: async_architecture_course_base:latest
-    command: /bin/bash -c "cd accounting && bundle exec whenever"
+    command: /bin/bash -c "cd accounting && bundle exec whenever --update-cron && tail -f /dev/null"
     depends_on:
       - db
       - bg-sync
