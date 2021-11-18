@@ -82,10 +82,10 @@ module Auth
       #
       # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
       #
-      sessions :cookie, secret: ENV['AUTH_SESSIONS_SECRET']
+      sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
 
       middleware.use OmniAuth::Builder do
-        provider :doorkeeper, ENV["TASKER_CLIENT_KEY"], ENV["TASKER_CLIENT_SECRET"], scope: 'public write'
+        provider :doorkeeper, ENV["ACCOUNTING_CLIENT_KEY"], ENV["ACCOUNTING_CLIENT_SECRET"], scope: 'public write'
       end
       # Configure Rack middleware for this application
       #

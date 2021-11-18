@@ -44,13 +44,6 @@ Command: Send email
 Data: user email + email data  
 Event: ?????  
 
-### Назначение стоимости задачи
-
-Actor: Event Tasks.Created  
-Command: Calculate task amounts  
-Data: task id  
-Event: Tasks.AmountCalculated
-
 -----
 
 ## CUD
