@@ -1,10 +1,15 @@
 require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
-require_relative '../lib/accounting'
+require_relative '../lib/core/libs/operation'
+require_relative '../lib/core/types'
 require_relative '../apps/web/application'
+require_relative '../apps/auth/application'
+require_relative '../apps/api/application'
 
 Hanami.configure do
+  mount Api::Application, at: '/api'
+  mount Auth::Application, at: '/auth'
   mount Web::Application, at: '/'
 
   model do
