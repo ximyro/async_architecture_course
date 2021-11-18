@@ -31,8 +31,14 @@ module KafkaApp
       topic :'tasks-stream' do
         consumer TasksStreamConsumer
       end
-      topic :tasks do
-        consumer TasksBEStreamConsumer
+      topic :'deposit-transactions-stream' do
+        consumer DepositTransactionsStreamConsumer
+      end
+      topic :'withdrawn-transactions-stream' do
+        consumer WithdrawnTransactionsStreamConsumer
+      end
+      topic :'billing-cycle' do
+        consumer BillingCycleConsumer
       end
     end
   end

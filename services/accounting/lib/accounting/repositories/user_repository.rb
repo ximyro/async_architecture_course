@@ -39,6 +39,10 @@ class UserRepository < Hanami::Repository
     assoc(:auth_identities, user).add(**auth_identity, provider: provider)
   end
 
+  def set_zero_balance(user_id)
+    update(user_id, balance: 0)
+  end
+
   def create_or_update_by_public_id(public_id, data)
     user = find_by_public_id(public_id)
     if user

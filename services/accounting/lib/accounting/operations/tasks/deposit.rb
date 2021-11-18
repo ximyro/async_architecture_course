@@ -23,14 +23,14 @@ module Operations
             description: description
           )
           Producer.call(
-            Events::BalanceAccrued.new(
+            Events::DepositTransactionCreated.new(
               task_public_id: public_id,
               user_public_id: completed_by_user_id,
-              amount: task.amount,
+              amount: task.amount.to_s,
               reason: reason,
               description: description
             ),
-            'users'
+            'deposit-transactions-stream'
           )
           users_repo.accure_balance(user.id, task.amount)
         end

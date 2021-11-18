@@ -23,14 +23,14 @@ module Operations
           )
 
           Producer.call(
-            Events::BalanceWithdrawn.new(
+            Events::WithdrawnTransactionCreated.new(
               task_public_id: public_id,
               user_public_id: assigned_user_id,
-              amount: task.assignment_fee,
+              amount: task.assignment_fee.to_s,
               reason: reason,
               description: description
             ),
-            'users'
+            'withdrawn-transactions-stream'
           )
           users_repo.withdraw_balances(user.id, task.assignment_fee)
         end

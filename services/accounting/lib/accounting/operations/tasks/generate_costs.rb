@@ -16,11 +16,11 @@ module Operations
 
       # Currency - USD
       def generate_assignment_fee
-        rand(1..100)
+        rand(10..20)
       end
 
       def generate_amount
-        rand(1..100)
+        rand(20..40)
       end
 
       def repo
