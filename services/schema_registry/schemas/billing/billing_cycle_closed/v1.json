@@ -2,7 +2,7 @@
     "type": "object",
     "properties": {
         "event_name": {
-            "enum": ["Billing.DepositTransactionCreated"]
+            "enum": ["Billing.BillingCycleClosed"]
         },
         "event_version": {
             "enum": ["v1"]

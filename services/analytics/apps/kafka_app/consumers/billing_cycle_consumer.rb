@@ -11,7 +11,7 @@ class BillingCycleConsumer < Karafka::BaseConsumer
       when 'Billing.BillingCycleClosed'
         case message['event_version']
         when 'v1'
-          operation.call(message['date'])
+          operation.call(message.dig('data', 'date'))
         else
           Hanami.logger.error "unsupported message: #{message}"
         end
@@ -20,6 +20,6 @@ class BillingCycleConsumer < Karafka::BaseConsumer
   end
 
   def operation
-    @_operation ||= CalculateDailyStatistics.new
+    @_operation ||= Operations::Management::CalculateDailyStatistics.new
   end
 end

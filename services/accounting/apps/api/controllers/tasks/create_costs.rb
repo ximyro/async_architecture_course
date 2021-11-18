@@ -3,14 +3,15 @@ module Api
     module Tasks
       class CreateCosts
         include Api::Action
+        include Dry::Monads::Result::Mixin
+        accept :json
 
         def call(params)
           task = params[:task]
           raise "Missing param task" unless task.present?
-
           @result = operation.call(task[:public_id])
 
-          if @result == Success
+          if @result.is_a?(Success)
             @result = transactions_operation.call(
               public_id: task[:public_id],
               assigned_user_id: task[:assigned_user_id],
@@ -25,7 +26,7 @@ module Api
         end
 
         def transactions_operation
-          @_transactions_operation ||= Operations::Tasks::WithDraw.new
+          @_transactions_operation ||= Operations::Tasks::Withdraw.new
         end
 
         private

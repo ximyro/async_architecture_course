@@ -26,7 +26,7 @@ module Operations
             Events::DepositTransactionCreated.new(
               task_public_id: public_id,
               user_public_id: completed_by_user_id,
-              amount: task.amount.to_s,
+              amount: BigDecimal(task.amount).to_s('F'),
               reason: reason,
               description: description
             ),

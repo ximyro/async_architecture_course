@@ -3,7 +3,7 @@
 module Operations
   module Tasks
     class Withdraw < ::Libs::Operation
-      def call(public_id:, assigned_user_id:)
+      def call(public_id:, assigned_user_id:, reason:, description:)
         task = repo.transaction do
           task = repo.find_or_create_by_public_id(public_id)
 
@@ -26,13 +26,13 @@ module Operations
             Events::WithdrawnTransactionCreated.new(
               task_public_id: public_id,
               user_public_id: assigned_user_id,
-              amount: task.assignment_fee.to_s,
+              amount: BigDecimal(task.assignment_fee).to_s('F'),
               reason: reason,
               description: description
             ),
             'withdrawn-transactions-stream'
           )
-          users_repo.withdraw_balances(user.id, task.assignment_fee)
+          users_repo.withdraw_balance(user.id, task.assignment_fee)
         end
 
         Success(task)

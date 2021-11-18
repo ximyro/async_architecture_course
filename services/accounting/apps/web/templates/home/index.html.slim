@@ -1,0 +1,30 @@
+- if current_user.role == "manager"
+    p= "Balance: #{balance}"
+    - if date.present?
+        h2 = "Статистика за #{date.strftime('%d-%m-%y')}"
+        table.table
+            thead
+                tr
+                    th Время
+                    th Операция
+                    th Причина
+            tbody
+                - transactions&.each do |transaction|
+                    tr
+                        td = transaction.created_at.to_s
+                        td
+                            - amount = BigDecimal(transaction.amount).to_s('F')
+                            - case transaction
+                                - when DailyDepositTransaction, DepositTransaction
+                                    = "+#{amount}"
+                                - when WithdrawTransaction, DailyWithdrawTransaction
+                                    = "-#{amount}"
+                        td = transaction.reason
+    - else
+        p Нет Данных
+- else
+    - if daily_statistics.present?
+        h2 = "Статистика за #{daily_statistics.date.strftime('%d-%m-%y')}"
+        p = "Менеджеры заработали #{Big§Decimal(daily_statistics.earn).to_s('F')}"
+    - else
+        p Нет Данных

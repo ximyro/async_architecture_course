@@ -15,15 +15,15 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
                   Operations::Tasks::Withdraw.new.call(
                     public_id: public_id,
                     assigned_user_id: data&.dig('assigned_user_id'),
-                    reason: data&.dig('title'),
-                    description: data&.dig('description')
+                    reason: data&.dig('title') || "Task #{public_id}",
+                    description: data&.dig('description') || ""
                   )
                 when 'Tasks.Completed'
                   Operations::Tasks::Deposit.new.call(
                     public_id: public_id,
                     completed_by_user_id: data&.dig('completed_by_user_id'),
-                    reason: data&.dig('title'),
-                    description: data&.dig('description')
+                    reason: data&.dig('title') || "Task #{public_id}",
+                    description: data&.dig('description') || ""
                   )
                 else
                   Hanami.logger.error "unsupported message: #{message}"

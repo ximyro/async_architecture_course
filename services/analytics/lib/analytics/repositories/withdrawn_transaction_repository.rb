@@ -1,10 +1,10 @@
 class WithdrawnTransactionRepository < Hanami::Repository
   def create_or_update(data, date)
     create(
-      date: Time.at(date),
+      date: Time.at(date.to_i),
       task_public_id: data['task_public_id'],
       user_public_id: data['user_public_id'],
-      amount: data['amount'],
+      amount: BigDecimal(data['amount']),
       reason: data['reason'],
       description: data['description']
     )

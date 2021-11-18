@@ -1,0 +1,15 @@
+- daily_statistics.each do |day_stat|
+    - task = tasks.find{|t| t.public_id == day_stat.most_expensive_task_public_id }
+    div.panel.panel-default
+        div.panel-heading
+            h2 = "Статистика за #{day_stat.date.strftime("%d-%m-%y")}"
+        div.panel-body
+            table.table
+                thead
+                    th Заработали
+                    th Кол-во попугов в долгах
+                    th Самая дорогая задача
+                tbody
+                    td = BigDecimal(day_stat.earned)&.to_s('F') || 0
+                    td = day_stat.employee_with_debt
+                    td = "#{task.present? ? task.title : "Задача(#{day_stat.most_expensive_task_public_id})"} - #{BigDecimal(day_stat.most_expensive_task_cost)&.to_s('F') || 0}"

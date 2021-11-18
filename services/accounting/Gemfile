@@ -15,6 +15,7 @@ gem "omniauth-accounts"
 gem "karafka"
 gem 'dry-configurable', '0.8'
 gem 'whenever', require: false
+gem 'schema_registry', path: '../schema_registry'
 
 group :development do
   # Code reloading

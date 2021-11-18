@@ -1,5 +1,6 @@
 require 'hanami/helpers'
 require 'hanami/assets'
+require "hanami/middleware/body_parser"
 
 module Api
   class Application < Hanami::Application
@@ -86,7 +87,7 @@ module Api
       # Configure Rack middleware for this application
       #
       # middleware.use Rack::Protection
-
+      middleware.use Hanami::Middleware::BodyParser, :json
       # Default format for the requests that don't specify an HTTP_ACCEPT header
       # Argument: A symbol representation of a mime type, defaults to :html
       #

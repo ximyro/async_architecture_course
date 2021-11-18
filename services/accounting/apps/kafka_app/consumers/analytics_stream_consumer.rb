@@ -15,7 +15,7 @@ class AnalyticsStreamConsumer < Karafka::BaseConsumer
           data = message['data']
           repo.create(
             date: Time.parse(data['date']),
-            earn: data['management_earn']
+            earn: BigDecimal(data['earned'])
           )
         else
           Hanami.logger.error "unsupported version #{message['event_version']} of message Analytics.DailyManagementCalculated: #{message}"

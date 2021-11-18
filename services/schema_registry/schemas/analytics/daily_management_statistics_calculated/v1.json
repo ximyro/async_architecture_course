@@ -31,7 +31,7 @@
                 },
                 "earned": {
                     "description": "Date",
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "required": [ "date", "most_expensive_task_cost", "most_expensive_task_public_id", "employee_with_debt", "earned"]

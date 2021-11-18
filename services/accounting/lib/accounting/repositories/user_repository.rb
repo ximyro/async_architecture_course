@@ -2,6 +2,10 @@ class UserRepository < Hanami::Repository
   associations do
     has_many :auth_identities
     has_many :tasks
+    has_many :daily_deposit_transactions
+    has_many :daily_withdraw_transactions
+    has_many :deposit_transactions
+    has_many :withdraw_transactions
   end
 
   def find_by_public_id(public_id)
@@ -41,6 +45,18 @@ class UserRepository < Hanami::Repository
 
   def set_zero_balance(user_id)
     update(user_id, balance: 0)
+  end
+
+  def last_date_with_statistics(user_id)
+    users.read(
+      "SELECT GREATEST(max(ddt.created_at), max(dwt.created_at)) as last_date FROM users as u
+        LEFT JOIN daily_deposit_transactions ddt ON ddt.user_id = u.id
+        LEFT JOIN daily_withdraw_transactions dwt ON dwt.user_id = u.id
+      WHERE u.id = #{user_id}
+      GROUP BY u.id
+      HAVING(COUNT(ddt.id) > 0 OR COUNT(dwt.id) > 0)
+      "
+    )&.map&.to_a&.dig(0, :last_date)
   end
 
   def create_or_update_by_public_id(public_id, data)
