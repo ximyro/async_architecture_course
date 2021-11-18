@@ -74,6 +74,16 @@ services:
     volumes:
       - services:/services
     env_file: ./services/accounting/.env
+  accounting_cron:
+    image: async_architecture_course_base:latest
+    command: /bin/bash -c "cd accounting && bundle exec whenever"
+    depends_on:
+      - db
+      - bg-sync
+      - kafka
+    volumes:
+      - services:/services
+    env_file: ./services/accounting/.env
   analytics:
     image: async_architecture_course_base:latest
     command: /bin/bash -c "cd analytics && bundle exec hanami server --host 0.0.0.0"

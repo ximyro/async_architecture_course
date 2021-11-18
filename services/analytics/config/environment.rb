@@ -2,6 +2,8 @@ require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
 require_relative '../lib/core/libs/operation'
+require_relative '../lib/core'
+require_relative '../lib/core/types'
 require_relative '../apps/web/application'
 require_relative '../apps/auth/application'
 

@@ -34,6 +34,9 @@ module KafkaApp
       topic :tasks do
         consumer TasksBEStreamConsumer
       end
+      topic :'analytics-stream' do
+        consumer AnalyticsStreamConsumer
+      end
     end
   end
 end

@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "event_name": {
+            "enum": ["Billing.DepositTransactionCreated"]
+        },
+        "event_version": {
+            "enum": ["v1"]
+        },
+        "event_time":    { "type": "string" },
+        "producer":      { "type": "string" },
+        "event_id":      { "type": "string"  }, 
+        "data": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "description": "Date",
+                    "type": "string"
+                }
+            },
+            "required": [ "date"]
+        }
+    },
+    "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+}

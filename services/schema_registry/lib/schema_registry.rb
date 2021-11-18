@@ -44,6 +44,8 @@ module SchemaRegistry
         "deposit_transactions/created"
       when "Billing.BillingCycleClosed"
         "billing/billing_cycle_closed"
+      when "Analytics.DailyManagementStatisticsCalculated"
+        "analytics/daily_management_statistics_calculated"
       else
         raise "Unsupported event: #{event_name}"
       end

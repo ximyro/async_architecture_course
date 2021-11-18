@@ -1,0 +1,41 @@
+{
+    "type": "object",
+    "properties": {
+        "event_name": {
+            "enum": ["Analytics.DailyManagementStatisticsCalculated"]
+        },
+        "event_version": {
+            "enum": ["v1"]
+        },
+        "event_time":    { "type": "string" },
+        "producer":      { "type": "string" },
+        "event_id":      { "type": "string"  }, 
+        "data": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "description": "Date",
+                    "type": "string"
+                },
+                "most_expensive_task_cost": {
+                    "description": "Date",
+                    "type": "string"
+                },
+                "most_expensive_task_public_id": {
+                    "description": "Date",
+                    "type": "string"
+                },
+                "employee_with_debt": {
+                    "description": "Date",
+                    "type": "integer"
+                },
+                "earned": {
+                    "description": "Date",
+                    "type": "integer"
+                }
+            },
+            "required": [ "date", "most_expensive_task_cost", "most_expensive_task_public_id", "employee_with_debt", "earned"]
+        }
+    },
+    "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+}
