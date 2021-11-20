@@ -5,8 +5,6 @@ namespace :billing do
     #-> PayedTransactionApplied -> PayMoney
     deposit_transactions_repo = DepositTransactionRepository.new
     withdraw_transactions_repo = WithdrawTransactionRepository.new
-    daily_deposit_transactions_repo = DailyDepositTransactionRepository.new
-    daily_withdraw_transactions_repo = DailyWithdrawTransactionRepository.new
     users_repo = UserRepository.new
 
     yesterday = Time.now - 24 * 60 * 60
@@ -16,10 +14,9 @@ namespace :billing do
 
     deposit_transactions.each do |k, transactions|
       daily_stats[k] = transactions.map(&:amount).reduce(:+)
-      daily_deposit_transactions_repo.create(
+      deposit_transactions_repo.create(
         reason: "Выплата за #{yesterday.strftime('%y/%d/%m')}",
         amount: transactions.map(&:amount).reduce(:+),
-        transaction_ids: transactions.map(&:id),
         user_id: k
       )
     end
@@ -28,10 +25,9 @@ namespace :billing do
       if daily_stats[k]
         daily_stats[k] -= transactions.map(&:amount).reduce(:+)
       end
-      daily_withdraw_transactions_repo.create(
+      withdraw_transactions_repo.create(
         reason: "Списание за #{yesterday.strftime('%y/%d/%m')}",
         amount: transactions.map(&:amount).reduce(:+),
-        transaction_ids: transactions.map(&:id),
         user_id: k
       )
     end

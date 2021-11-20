@@ -1,7 +1,7 @@
 require_relative 'base'
 
 module Events
-  class WithdrawnTransactionCreated < Base
+  class DepositTransactionApplied < Base
     attribute :task_public_id, Core::Types::String
     attribute :user_public_id, Core::Types::String
     attribute :amount, Core::Types::String
@@ -9,7 +9,7 @@ module Events
     attribute :description, Core::Types::String
 
     def event_name
-      "Billing.WithdrawnTransactionCreated"
+      "Billing.DepositTransactionApplied"
     end
 
     def event_version

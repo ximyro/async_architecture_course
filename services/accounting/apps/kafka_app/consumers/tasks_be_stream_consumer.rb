@@ -12,18 +12,16 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
       public_id = data&.dig('public_id')
       result = case message['event_name']
                 when 'Tasks.Assigned'
-                  Operations::Tasks::Withdraw.new.call(
+                  Operations::Transactions::ApplyWithdraw.new.call(
                     public_id: public_id,
                     assigned_user_id: data&.dig('assigned_user_id'),
-                    reason: data&.dig('title') || "Task #{public_id}",
-                    description: data&.dig('description') || ""
+                    reason: data&.dig('title') || "Task #{public_id}"
                   )
                 when 'Tasks.Completed'
-                  Operations::Tasks::Deposit.new.call(
+                  Operations::Transactions::ApplyDeposit.new.call(
                     public_id: public_id,
                     completed_by_user_id: data&.dig('completed_by_user_id'),
-                    reason: data&.dig('title') || "Task #{public_id}",
-                    description: data&.dig('description') || ""
+                    reason: data&.dig('title') || "Task #{public_id}"
                   )
                 else
                   Hanami.logger.error "unsupported message: #{message}"
