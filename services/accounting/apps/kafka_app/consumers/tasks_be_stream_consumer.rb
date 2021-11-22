@@ -12,17 +12,41 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
       public_id = data&.dig('public_id')
       result = case message['event_name']
                 when 'Tasks.Assigned'
-                  Operations::Transactions::ApplyWithdraw.new.call(
-                    public_id: public_id,
-                    assigned_user_id: data&.dig('assigned_user_id'),
-                    reason: data&.dig('title') || "Task #{public_id}"
-                  )
+                  case message['event_version']
+                  when 'v1'
+                    Operations::Transactions::ApplyWithdraw.new.call(
+                      public_id: public_id,
+                      assigned_user_id: data&.dig('assigned_user_id'),
+                      reason: data&.dig('title') || "Task #{public_id}"
+                    )
+                  when 'v2'
+                    valid_event?
+                    Operations::Transactions::ApplyWithdraw.new.call(
+                      public_id: public_id,
+                      assigned_user_id: data&.dig('assigned_user_id'),
+                      reason: data&.dig('title') || "Task #{public_id}"
+                    )
+                  else
+                    Hanami.logger.error "unsupported version #{message['event_version']} of message #{message}"
+                  end
                 when 'Tasks.Completed'
-                  Operations::Transactions::ApplyDeposit.new.call(
-                    public_id: public_id,
-                    completed_by_user_id: data&.dig('completed_by_user_id'),
-                    reason: data&.dig('title') || "Task #{public_id}"
-                  )
+                  case message['event_version']
+                  when 'v1'
+                    Operations::Transactions::ApplyDeposit.new.call(
+                      public_id: public_id,
+                      completed_by_user_id: data&.dig('completed_by_user_id'),
+                      reason: data&.dig('title') || "Task #{public_id}"
+                    )
+                  when 'v2'
+                    valid_event?
+                    Operations::Transactions::ApplyDeposit.new.call(
+                      public_id: public_id,
+                      completed_by_user_id: data&.dig('completed_by_user_id'),
+                      reason: data&.dig('title') || "Task #{public_id}"
+                    )
+                  else
+                    Hanami.logger.error "unsupported version #{message['event_version']} of message #{message}"
+                  end
                 else
                   Hanami.logger.error "unsupported message: #{message}"
                end
@@ -31,5 +55,9 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
         Hanami.logger.error "can't handle message: #{message}, error: #{result.inspect}"
       end
     end
+  end
+
+  def valid_event?
+    true
   end
 end

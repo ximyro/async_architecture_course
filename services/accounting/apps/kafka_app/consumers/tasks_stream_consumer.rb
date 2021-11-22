@@ -13,11 +13,11 @@ class TasksStreamConsumer < Karafka::BaseConsumer
         case message['event_version']
         when 'v1'
           repo.create_or_update_by_public_id(data&.dig('public_id'), data)
-          generate_costs_operation.call(
-            public_id: data['public_id'],
-            assigned_user_id: data['assigned_user_id'],
-            reason: data['title']
-          )
+          generate_costs_operation.call(data['public_id'])
+        when 'v2'
+          valid_event?(data)
+          repo.create_or_update_by_puc_id(data&.dig('public_id'), data)
+          generate_costs_operation.call(blidata['public_id'])
         else
           Hanami.logger.error "unsupported version #{message['event_version']} for message: #{message}"
         end
@@ -26,6 +26,9 @@ class TasksStreamConsumer < Karafka::BaseConsumer
         case message['event_version']
         when 'v1'
           repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        when 'v2'
+          valid_event?(data)
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
         else
           Hanami.logger.error "unsupported version #{message['event_version']} for message: #{message}"
         end
@@ -33,11 +36,15 @@ class TasksStreamConsumer < Karafka::BaseConsumer
     end
   end
 
+  def valid_event?(_data)
+    true
+  end
+
   def repo
     @_repo ||= TaskRepository.new
   end
 
   def generate_costs_operation
-    @_generate_costs_operation ||=  Operations::Tasks::GenerateCosts.new
+    @_generate_costs_operation ||= Operations::Tasks::GenerateCosts.new
   end
 end

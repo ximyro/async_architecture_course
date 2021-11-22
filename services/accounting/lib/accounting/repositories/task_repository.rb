@@ -20,22 +20,22 @@ class TaskRepository < Hanami::Repository
 
   def create_or_update_by_public_id(public_id, data)
     task = find_by_public_id(public_id)
-    if task
-      return update(
-        task.id,
-        title: data['title'],
-        description: data['description'],
-        assigned_user_id: data['assigned_user_id'],
-        status: data['status']
-      )
-    end
 
-    create(
-      public_id: data['public_id'],
+    attributes = {
       title: data['title'],
       description: data['description'],
       assigned_user_id: data['assigned_user_id'],
-      status: data['status']
-    )
+      status: data['status'],
+      jria_id: data['jira_id']
+    }
+
+    if task
+      return update(
+        task.id,
+        attributes
+      )
+    end
+
+    create(attributes)
   end
 end

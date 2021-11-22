@@ -5,22 +5,22 @@ class UserRepository < Hanami::Repository
   end
 
   def find_by_public_id(public_id)
-    root.where(public_id: public_id).one
+    users.where(public_id: public_id).one
   end
 
   def find_by_id(id)
-    root.where(id: id).one
+    users.where(id: id).one
   end
 
   def find_or_create_by_public_id(public_id, params)
-    user = root.find_by_public_id(public_id)
+    user = find_by_public_id(public_id)
     return user if user.present?
 
-    root.create(params)
+    create(params)
   end
 
   def find_by_auth_identity(provider, auth_identity)
-    root
+    users
       .join(auth_identities)
       .where(auth_identities[:provider] => provider)
       .where(auth_identities[:login] => auth_identity[:login])

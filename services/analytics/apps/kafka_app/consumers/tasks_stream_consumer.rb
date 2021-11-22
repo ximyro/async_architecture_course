@@ -10,9 +10,19 @@ class TasksStreamConsumer < Karafka::BaseConsumer
       data = message['data']
       case message['event_name']
       when 'Tasks.Created', 'Tasks.Updated'
-        repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        case message['event_version']
+        when 'v1'
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        when 'v2'
+          valid_event?
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        end
       end
     end
+  end
+
+  def valid_event?
+    true
   end
 
   def repo
