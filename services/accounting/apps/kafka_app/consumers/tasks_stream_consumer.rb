@@ -15,11 +15,14 @@ class TasksStreamConsumer < Karafka::BaseConsumer
           repo.create_or_update_by_public_id(data&.dig('public_id'), data)
           generate_costs_operation.call(data['public_id'])
         when 'v2'
-          valid_event?(data)
-          repo.create_or_update_by_puc_id(data&.dig('public_id'), data)
-          generate_costs_operation.call(blidata['public_id'])
+          unless valid_event?(data)
+            KafkaApp::Application.logger.error "invalid event: #{data}"
+            return
+          end
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+          generate_costs_operation.call(data['public_id'])
         else
-          Hanami.logger.error "unsupported version #{message['event_version']} for message: #{message}"
+          KafkaApp::Application.logger.error "unsupported version #{message['event_version']} for message: #{message}"
         end
 
       when 'Tasks.Updated'
@@ -27,17 +30,23 @@ class TasksStreamConsumer < Karafka::BaseConsumer
         when 'v1'
           repo.create_or_update_by_public_id(data&.dig('public_id'), data)
         when 'v2'
-          valid_event?(data)
+          unless valid_event?(data)
+            KafkaApp::Application.logger.error "invalid event: #{data}"
+            return
+          end
           repo.create_or_update_by_public_id(data&.dig('public_id'), data)
         else
-          Hanami.logger.error "unsupported version #{message['event_version']} for message: #{message}"
+          KafkaApp::Application.logger.error "unsupported version #{message['event_version']} for message: #{message}"
         end
       end
     end
   end
 
-  def valid_event?(_data)
-    true
+  def valid_event?(data)
+    title = data&.dig('title')
+    return true unless title
+
+    !(title.include?('[') | title.include?(']'))
   end
 
   def repo

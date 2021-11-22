@@ -6,6 +6,10 @@ h1 Create Task
     label :title; \
     text_field :title, class: 'form-control' \
   end; \
+   div class: 'form-group' do \
+    label :jira_id; \
+    text_field :jira_id, class: 'form-control' \
+  end; \
   div class: 'form-group' do \
     label :description; \
     textarea :description, name: 'task[description]', class: 'form-control' \

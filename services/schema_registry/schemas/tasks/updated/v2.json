@@ -5,7 +5,7 @@
         "enum": ["Tasks.Updated"]
       },
       "event_version": {
-        "enum": ["v1"]
+        "enum": ["v2"]
       },
       "event_time":    { "type": "string" },
       "producer":      { "type": "string" },

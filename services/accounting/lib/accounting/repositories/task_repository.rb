@@ -36,6 +36,7 @@ class TaskRepository < Hanami::Repository
       )
     end
 
+    attributes[:public_id] = public_id
     create(attributes)
   end
 end

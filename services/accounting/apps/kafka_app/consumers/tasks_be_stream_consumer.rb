@@ -20,14 +20,17 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
                       reason: data&.dig('title') || "Task #{public_id}"
                     )
                   when 'v2'
-                    valid_event?
+                    unless valid_event?(data)
+                      KafkaApp::Application.logger.error "invalid event: #{data}"
+                      return
+                    end
                     Operations::Transactions::ApplyWithdraw.new.call(
                       public_id: public_id,
                       assigned_user_id: data&.dig('assigned_user_id'),
                       reason: data&.dig('title') || "Task #{public_id}"
                     )
                   else
-                    Hanami.logger.error "unsupported version #{message['event_version']} of message #{message}"
+                    KafkaApp::Application.logger.error "unsupported version #{message['event_version']} of message #{message}"
                   end
                 when 'Tasks.Completed'
                   case message['event_version']
@@ -38,26 +41,32 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
                       reason: data&.dig('title') || "Task #{public_id}"
                     )
                   when 'v2'
-                    valid_event?
+                    unless valid_event?(data)
+                      KafkaApp::Application.logger.error "invalid event: #{data}"
+                      return
+                    end
                     Operations::Transactions::ApplyDeposit.new.call(
                       public_id: public_id,
                       completed_by_user_id: data&.dig('completed_by_user_id'),
                       reason: data&.dig('title') || "Task #{public_id}"
                     )
                   else
-                    Hanami.logger.error "unsupported version #{message['event_version']} of message #{message}"
+                    KafkaApp::Application.logger.error "unsupported version #{message['event_version']} of message #{message}"
                   end
                 else
-                  Hanami.logger.error "unsupported message: #{message}"
+                  KafkaApp::Application.logger.error "unsupported message: #{message}"
                end
 
       if result == Failure
-        Hanami.logger.error "can't handle message: #{message}, error: #{result.inspect}"
+        KafkaApp::Application.logger.error "can't handle message: #{message}, error: #{result.inspect}"
       end
     end
   end
 
-  def valid_event?
-    true
+  def valid_event?(data)
+    title = data&.dig('title')
+    return true unless title
+
+    !(title.include?('[') | title.include?(']'))
   end
 end

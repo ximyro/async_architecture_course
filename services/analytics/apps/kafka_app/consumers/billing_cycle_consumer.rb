@@ -13,7 +13,7 @@ class BillingCycleConsumer < Karafka::BaseConsumer
         when 'v1'
           operation.call(message.dig('data', 'date'))
         else
-          Hanami.logger.error "unsupported message: #{message}"
+          KafkaApp::Application.logger.error "unsupported message: #{message}"
         end
       end
     end

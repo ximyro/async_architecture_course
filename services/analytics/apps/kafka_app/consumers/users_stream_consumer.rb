@@ -7,7 +7,6 @@ class UsersStreamConsumer < Karafka::BaseConsumer
         return nil
       end
 
-
       data = message['data']
       case message['event_name']
       when 'Users.Created', 'Users.Updated'
