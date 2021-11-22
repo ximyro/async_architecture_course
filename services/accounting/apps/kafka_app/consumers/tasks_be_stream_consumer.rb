@@ -11,7 +11,7 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
       data = message['data']
       public_id = data&.dig('public_id')
       result = case message['event_name']
-                when 'Tasks.Assigned'
+                when 'Tasks.Assigned', 'Tasks.CagedBird'
                   case message['event_version']
                   when 'v1'
                     Operations::Transactions::ApplyWithdraw.new.call(
@@ -32,7 +32,7 @@ class TasksBEStreamConsumer < Karafka::BaseConsumer
                   else
                     KafkaApp::Application.logger.error "unsupported version #{message['event_version']} of message #{message}"
                   end
-                when 'Tasks.Completed'
+                when 'Tasks.Completed', 'Tasks.MilletInBowl'
                   case message['event_version']
                   when 'v1'
                     Operations::Transactions::ApplyDeposit.new.call(
