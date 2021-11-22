@@ -10,7 +10,7 @@ module Web
           task = task_repo.find_with_user(task.id)
           event = task.to_h.merge(completed_by_user_id: task.user.public_id, assigned_user_id: task.user.public_id)
           Producer.call(Events::TaskUpdated.new(event.to_h), 'tasks-stream')
-          Producer.call(Events::TaskCompleted.new(event.to_h), 'tasks')
+          Producer.call(Events::MilletInBowl.new(event.to_h), 'tasks')
 
           redirect_to '/'
         end

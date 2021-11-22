@@ -1,12 +1,12 @@
 module Events
-  class TaskAssigned < Base
+  class CagedBird < Base
     attribute :public_id, Core::Types::String
     attribute :assigned_user_id, Core::Types::String
     attribute :title, Core::Types::String
     attribute :description, Core::Types::String
 
     def event_name
-      "Tasks.Assigned"
+      "Tasks.CagedBird"
     end
 
     def event_version
