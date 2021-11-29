@@ -10,7 +10,12 @@ class UsersStreamConsumer < Karafka::BaseConsumer
       data = message['data']
       case message['event_name']
       when 'Users.Created', 'Users.Updated'
-        repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        case message['event_version']
+        when 'v1'
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        else
+          Hanami.logger.error "unsupported version: #{message['event_version']} of message: #{message}"
+        end
       end
     rescue => e
       KafkaApp::Application.logger.error "can't create or update user: #{data}: #{e}"

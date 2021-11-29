@@ -18,17 +18,6 @@ module Operations
           employee_with_debt: users_with_dept || 0,
           earned: management_earn || 0
         )
-
-        Producer.call(
-          Events::DailyManagementStatisticsCalculated.new(
-            date: date.to_s,
-            most_expensive_task_cost: deposit_transaction&.amount ? BigDecimal(deposit_transaction.amount).to_s('F') : "0",
-            most_expensive_task_public_id: deposit_transaction&.task_public_id,
-            employee_with_debt: users_with_dept || "0",
-            earned: management_earn ? BigDecimal(management_earn).to_s('F') : "0"
-          ),
-          'analytics-stream'
-        )
       end
 
       def deposit_transactions_repo

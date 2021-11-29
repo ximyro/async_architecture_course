@@ -2,8 +2,6 @@ class UserRepository < Hanami::Repository
   associations do
     has_many :auth_identities
     has_many :tasks
-    has_many :daily_deposit_transactions
-    has_many :daily_withdraw_transactions
     has_many :deposit_transactions
     has_many :withdraw_transactions
   end

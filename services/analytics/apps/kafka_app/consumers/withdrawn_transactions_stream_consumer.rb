@@ -13,7 +13,7 @@ class WithdrawnTransactionsStreamConsumer < Karafka::BaseConsumer
         when 'v1'
           repo.create_or_update(message['data'], message['event_time'])
         else
-          Hanami.logger.error "unsupported message: #{message}"
+          KafkaApp::Application.logger.error "unsupported message: #{message}"
         end
       end
     end

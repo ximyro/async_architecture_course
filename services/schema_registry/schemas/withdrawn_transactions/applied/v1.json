@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "event_name": {
+            "enum": ["Billing.WithdrawnTransactionApplied"]
+        },
+        "event_version": {
+            "enum": ["v1"]
+        },
+        "event_time":    { "type": "string" },
+        "producer":      { "type": "string" },
+        "event_id":      { "type": "string"  }, 
+        "data": {
+            "type": "object",
+            "properties": {
+                "task_public_id": {
+                    "description": "The identifier of a task",
+                    "type": "string"
+                },
+                "user_public_id": {
+                    "description": "The identifier of a user",
+                    "type": "string"
+                },
+                "reason": {
+                    "description": "User's role",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "User's full name",
+                    "type": "string"
+                }
+            },
+            "required": [ "task_public_id", "user_public_id", "reason", "description" ]
+        }
+    },
+    "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+}

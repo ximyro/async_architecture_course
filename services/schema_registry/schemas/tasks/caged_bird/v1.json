@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+      "event_name": {
+        "enum": ["Tasks.CagedBird"]
+      },
+      "event_version": {
+        "enum": ["v1"]
+      },
+      "event_time":    { "type": "string" },
+      "producer":      { "type": "string" },
+      "event_id":      { "type": "string"  }, 
+      "data": {
+        "type": "object",
+        "properties": {
+            "public_id": {
+              "description": "The identifier of task",
+              "type": "string"
+            },
+            "assigned_user_id": {
+                "description": "The identifier of assigned user",
+                "type": "string"
+            },
+            "title": {
+              "description": "Task title",
+              "type": "string"
+            },
+            "description": {
+              "description": "Task description",
+              "type": ["string"]
+            }
+        },
+        "required": ["assigned_user_id", "public_id", "title", "description"]
+      },
+      "required": ["event_name", "event_version", "data", "event_time", "producer", "event_id"]
+    }
+  }

@@ -12,6 +12,9 @@ module Web
 
         def call(_params)
           @title = 'Tasks'
+          unless current_user.present?
+            redirect_to '/auth/signin'
+          end
           result = operation.call(current_user)
           case result
           when Success

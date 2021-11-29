@@ -1,9 +1,9 @@
 class DepositTransactionRepository < Hanami::Repository
-  def all_from_date(date)
-    deposit_transactions.where("created_at BETWEEN (date_trunc('day', ?::TIMESTAMP WITH TIME ZONE)) AND (date_trunc('day', ?::TIMESTAMP WITH TIME ZONE) + interval '1 day' - interval '1 second')", date, date)
+  def all_for_period(start_date, end_date)
+    deposit_transactions.where("created_at BETWEEN ? AND ?", start_date, end_date)
   end
 
-  def find_with_user_and_date(user_id, date)
-    all_from_date(date).where(user_id: user_id)
+  def find_with_user_and_period(user_id, started_at, ended_at)
+    all_for_period(started_at, ended_at).where(user_id: user_id)
   end
 end

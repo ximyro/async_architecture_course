@@ -10,9 +10,25 @@ class TasksStreamConsumer < Karafka::BaseConsumer
       data = message['data']
       case message['event_name']
       when 'Tasks.Created', 'Tasks.Updated'
-        repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        case message['event_version']
+        when 'v1'
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        when 'v2'
+          unless valid_event?(data)
+            KafkaApp::Application.logger.error "invalid event: #{data}"
+            return
+          end
+          repo.create_or_update_by_public_id(data&.dig('public_id'), data)
+        end
       end
     end
+  end
+
+  def valid_event?(data)
+    title = data&.dig('title')
+    return true unless title
+
+    !(title.include?('[') | title.include?(']'))
   end
 
   def repo
