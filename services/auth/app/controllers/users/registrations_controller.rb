@@ -17,6 +17,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     user = User.find(current_user.id)
     event = {
       event_name: "Users.Created",
+      event_version: "v1",
       data: {
         public_id: user.public_id,
         email: user.email,
@@ -24,7 +25,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         full_name: user.full_name,
       }
     }
-    Producer.call(event.to_json, "users-stream")
+    Producer.call(event, "users-stream")
   end
 
   # GET /resource/edit

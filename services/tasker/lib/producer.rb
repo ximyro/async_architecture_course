@@ -1,21 +1,17 @@
 class Producer
   class << self
-    def call(data, topic)
-      setup
-      Hanami.logger.info "Sending event: #{data}, with topic: #{topic}"
-      WaterDrop::SyncProducer.call(data, topic: topic)
-    end
+    def call(event, topic)
+      event_data = event.serialize
+      SchemaRegistry.valid_event?(
+        event_data[:event_name],
+        event_data[:event_version],
+        event_data
+      )
 
-    private
-
-    def setup
-      return @setuped if @setuped.present?
-
-      WaterDrop.setup do |config|
-        config.deliver = true
-        config.kafka.seed_brokers = ['kafka://kafka:9092']
-      end
-      @setuped = true
+      Hanami.logger.info "Sending event: #{event_data}, with topic: #{topic}"
+      WaterDrop::SyncProducer.call(event.serialize.to_json, topic: topic)
+    rescue JSON::Schema::ValidationError => e
+      Hanami.logger.error "Can't send the event: #{event_data}, error: #{e.inspect}"
     end
   end
 end

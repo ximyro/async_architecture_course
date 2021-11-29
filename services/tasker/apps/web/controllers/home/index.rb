@@ -5,22 +5,24 @@ module Web
       class Index
         include Web::Action
         include AuthorizationHelper
+        include Dry::Monads::Result::Mixin
         expose :tasks
         expose :title
         expose :current_user
 
         def call(_params)
           @title = 'Tasks'
-
-          if current_user.role == "manager"
-            @tasks = task_repo.find_with_users
-          else
-            @tasks = task_repo.find_user_tasks(current_user)
+          result = operation.call(current_user)
+          case result
+          when Success
+            @tasks = result.value!
+          when Failure
+            redirect_to routes.login_path
           end
         end
 
-        def task_repo
-          @_task_repo ||= TaskRepository.new
+        def operation
+          @_operation ||= Operations::Tasks::GetAllTasksWithRole.new
         end
       end
     end
